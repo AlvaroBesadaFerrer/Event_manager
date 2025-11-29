@@ -48,3 +48,14 @@ if button:
     }
 
     save_data(data)
+
+
+# TODO: Add validation for time inputs (end time should be after start time)
+# Add all validations before saving the event
+# Add business logic to avoid overlapping events in the same spot
+# Consider adding a description field for more event details
+# Implement editing and deleting events functionality
+# Implement when clicking an event in the timeline, show its details
+# AI integration for suggesting how to optimize scheduling based on past events
+# Mark as done
+# Font color adjustment based on background color for better readability
