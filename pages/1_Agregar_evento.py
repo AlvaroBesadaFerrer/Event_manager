@@ -3,8 +3,11 @@ from datetime import datetime, timedelta
 from json_storage.save_load_data import save_data
 from zoneinfo import ZoneInfo
 from domain.event import Event
-from main import events
-from enums import TRABAJADORES, EVENTS, SPOTS, RESOURCES
+from json_storage.save_load_data import events
+from domain.resources_data import RESOURCES
+from uuid import uuid4
+from utils.filter_utils import filter_resources_by_type
+from domain.resource import ResourcesType
 
 
 st.set_page_config(page_title="Agregar evento", page_icon=":hammer_and_wrench:")
@@ -13,13 +16,13 @@ st.set_page_config(page_title="Agregar evento", page_icon=":hammer_and_wrench:")
 st.markdown("# Agregar evento :red_car:")
 
 st.subheader("Detalles del evento")
-spot = st.selectbox("Lugar del evento:", options = SPOTS)
-event_type = st.selectbox("Tipo de evento:", options = EVENTS)
-workers = st.multiselect("Trabajadores:", options = TRABAJADORES)
-st.markdown("Recursos:")
+spot = st.selectbox("Lugar del evento:", options = filter_resources_by_type(RESOURCES, ResourcesType.Area_de_trabajo))
+event_type = st.selectbox("Tipo de evento:", options = filter_resources_by_type(RESOURCES, ResourcesType.Tipo_de_evento))
+workers = st.multiselect("Trabajadores:", options = filter_resources_by_type(RESOURCES, ResourcesType.Trabajador))
+st.markdown("Herramientas:")
 
 resources = []
-for i in RESOURCES:
+for i in filter_resources_by_type(RESOURCES, ResourcesType.Herramienta):
     if st.checkbox(i):
         resources.append(i)
 
@@ -38,6 +41,7 @@ if button:
 
     events.append(
         Event(
+            id=str(uuid4()),
             spot=spot,
             event_type=event_type,
             workers=workers,
@@ -61,3 +65,4 @@ if button:
 # AI integration for suggesting how to optimize scheduling based on past events
 # Mark as done
 # Font color adjustment based on background color for better readability
+# Emojis de los recursos en la seleccion

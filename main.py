@@ -1,15 +1,14 @@
 import streamlit as st
 from streamlit_timeline import st_timeline
-from utils.time_utils import parse_date, parse_time, parse_start_end_date_time
+from utils.time_utils import parse_start_end_date_time
 from utils.color_utils import get_text_color
-from json_storage.save_load_data import load_data
-from uuid import uuid4
-from datetime import datetime
+from json_storage.save_load_data import load_data, events
 
 
 st.markdown("# Eventos :blue_car:")
 
-events = load_data()
+load_data()
+
 items = []
 
 

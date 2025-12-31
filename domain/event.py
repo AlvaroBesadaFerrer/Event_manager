@@ -1,8 +1,8 @@
 from uuid import uuid4
 
 class Event():
-    def __init__(self, spot, event_type, workers, resources, date, end_time, start_time, color):
-        self.id = str(uuid4())
+    def __init__(self, id, spot, event_type, workers, resources, date, end_time, start_time, color):
+        self.id = id
         self.spot = spot
         self.event_type = event_type
         self.workers = workers

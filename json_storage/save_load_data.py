@@ -1,6 +1,9 @@
 import json
 from domain.event import Event
 
+
+events = []
+
 def save_data(event_data):
 
     data = []
@@ -30,7 +33,6 @@ def load_data():
     except FileNotFoundError:
         event_data = []
     
-    events = []
     for event in event_data:
         events.append(
             Event(
@@ -45,4 +47,3 @@ def load_data():
                 color=event["color"]
             )
         )
-    return events
