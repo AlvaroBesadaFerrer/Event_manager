@@ -4,9 +4,9 @@ from utils.time_utils import parse_date, parse_time, parse_start_end_date_time
 from utils.color_utils import get_text_color
 from json_storage.save_load_data import load_data
 from uuid import uuid4
-from datetime import datetime
 
 
+st.set_page_config(page_title="Ver eventos", page_icon=":calendar:")
 st.markdown("# Eventos :blue_car:")
 
 events = load_data()
@@ -18,7 +18,7 @@ for event in events:
         start_datetime, end_datetime = parse_start_end_date_time(event)
 
         items.append({
-            "id": event.id,
+            "id": str(uuid4()),
             "content": event.event_type,
             "start": start_datetime.isoformat(),
             "end": end_datetime.isoformat(),

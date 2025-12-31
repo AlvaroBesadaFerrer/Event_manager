@@ -1,9 +1,9 @@
 import streamlit as st
 from datetime import datetime, timedelta
-from save_load_data import save_data
+from json_storage.save_load_data import save_data
 from zoneinfo import ZoneInfo
-from main import data
-from uuid import uuid4
+from domain.event import Event
+from main import events
 from enums import TRABAJADORES, EVENTS, SPOTS, RESOURCES
 
 
@@ -23,11 +23,11 @@ for i in RESOURCES:
     if st.checkbox(i):
         resources.append(i)
 
-event_color = st.color_picker("Color del evento:", value="#3498db")
+color = st.color_picker("Color del evento:", value="#3498db")
 
 current_time = datetime.now(ZoneInfo('America/Havana'))
 
-start_date = str(st.date_input("Fecha: ", value= current_time))
+date = str(st.date_input("Fecha: ", value= current_time))
 start_time = str(st.time_input("Hora de inicio: ", value= current_time))
 end_time = str(st.time_input("Hora de fin: ", value= current_time + timedelta(minutes = 30)))
 
@@ -36,21 +36,23 @@ button = st.button("Agregar evento", on_click=None)
 if button:
     st.success("Evento guardado con éxito!", icon="✅")
 
-    data[str(uuid4())] = {
-        "spot": spot,
-        "event_type": event_type,
-        "workers": workers,
-        "resources": resources,
-        "start_date": start_date,
-        "start_time": start_time,
-        "end_time": end_time,
-        "color": event_color,  # Save the color with event data
-    }
+    events.append(
+        Event(
+            spot=spot,
+            event_type=event_type,
+            workers=workers,
+            resources=resources,
+            date=date,
+            start_time=start_time,
+            end_time=end_time,
+            color=color,
+        )
+    )
 
-    save_data(data)
+    save_data(events)
 
 
-# TODO: Add validation for time inputs (end time should be after start time)
+# TODO: Add validation for time inputs (end time should be after start time) and midnight work?
 # Add all validations before saving the event
 # Add business logic to avoid overlapping events in the same spot
 # Consider adding a description field for more event details
