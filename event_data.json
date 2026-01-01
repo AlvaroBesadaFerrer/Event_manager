@@ -1,44 +1,4 @@
 [
     {
-        "id": "bdb0d8fc-fd30-449d-abd7-dea0a66dd19f",
-        "spot": "Espacio de pintura",
-        "event_type": "Electricidad",
-        "workers": [],
-        "resources": [
-            "Caja de herramientas",
-            "Planta de soldar",
-            "Guantes"
-        ],
-        "start_date": "2025-12-31",
-        "start_time": "17:20:00",
-        "end_time": "01:00:00",
-        "color": "#162631"
-    },
-    {
-        "id": "53f4efc1-f4ef-4afc-ad2c-37d724b79fea",
-        "spot": "Espacio con rampa",
-        "event_type": "Electricidad",
-        "workers": [],
-        "resources": [],
-        "start_date": "2025-12-31",
-        "start_time": "17:21:00",
-        "end_time": "17:51:00",
-        "color": "#3498db"
-    },
-    {
-        "id": "2d96d13a-dd10-4cea-a039-b5d860df5c56",
-        "spot": "Espacio con rampa",
-        "event_type": "Electricidad",
-        "workers": [
-            "Pedro"
-        ],
-        "resources": [
-            "Planta de soldar",
-            "Guantes"
-        ],
-        "start_date": "2025-12-31",
-        "start_time": "17:22:00",
-        "end_time": "17:52:00",
-        "color": "#e4e5e6"
-    }
-]
+        "id": "e65c032d-b8da-4b39-a0c6-84330d4f847f",
+        "spot": 

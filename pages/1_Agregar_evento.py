@@ -1,6 +1,5 @@
 import streamlit as st
 from datetime import datetime, timedelta
-from json_storage.save_load_data import save_data
 from zoneinfo import ZoneInfo
 from domain.event import Event
 from json_storage.save_load_data import events
@@ -8,22 +7,35 @@ from domain.resources_data import RESOURCES
 from uuid import uuid4
 from utils.filter_utils import filter_resources_by_type
 from domain.resource import ResourcesType
+from domain.schedule import add_event
 
 
 st.set_page_config(page_title="Agregar evento", page_icon=":hammer_and_wrench:")
 
 
 st.markdown("# Agregar evento :red_car:")
-
 st.subheader("Detalles del evento")
-spot = st.selectbox("Lugar del evento:", options = filter_resources_by_type(RESOURCES, ResourcesType.Area_de_trabajo))
-event_type = st.selectbox("Tipo de evento:", options = filter_resources_by_type(RESOURCES, ResourcesType.Tipo_de_evento))
-workers = st.multiselect("Trabajadores:", options = filter_resources_by_type(RESOURCES, ResourcesType.Trabajador))
+
+spot = st.selectbox(
+    "Lugar del evento:",
+    options = filter_resources_by_type(RESOURCES, ResourcesType.Area_de_trabajo),
+    format_func = lambda x: x.name,
+)
+event_type = st.selectbox(
+    "Tipo de evento:",
+    options = filter_resources_by_type(RESOURCES, ResourcesType.Tipo_de_evento),
+    format_func = lambda x: x.name,
+)
+workers = st.multiselect(
+    "Trabajadores:",
+    options = filter_resources_by_type(RESOURCES, ResourcesType.Trabajador),
+    format_func = lambda x: x.name,
+)
 st.markdown("Herramientas:")
 
 resources = []
 for i in filter_resources_by_type(RESOURCES, ResourcesType.Herramienta):
-    if st.checkbox(i):
+    if st.checkbox(i.name):
         resources.append(i)
 
 color = st.color_picker("Color del evento:", value="#3498db")
@@ -37,9 +49,8 @@ end_time = str(st.time_input("Hora de fin: ", value= current_time + timedelta(mi
 button = st.button("Agregar evento", on_click=None)
 
 if button:
-    st.success("Evento guardado con éxito!", icon="✅")
 
-    events.append(
+    response = add_event(
         Event(
             id=str(uuid4()),
             spot=spot,
@@ -53,7 +64,11 @@ if button:
         )
     )
 
-    save_data(events)
+    if response:
+        st.success("Evento guardado con éxito!", icon="✅")
+    else: 
+        st.error("Error en las restricciones", icon="🚨")
+
 
 
 # TODO: Add validation for time inputs (end time should be after start time) and midnight work?

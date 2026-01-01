@@ -11,3 +11,12 @@ class Event():
         self.start_time = start_time
         self.end_time = end_time
         self.color = color
+
+    def intersection(self, other_event):
+        return self.start_time >= other_event.start_time and self.start_time < other_event.end_time
+
+    def check_resources_availability(self, other_event):
+        for resource in self.resources:
+            if resource in other_event.resources:
+                return False
+        return True

@@ -9,7 +9,7 @@ class ResourcesType(Enum):
     Trabajador = "Trabajador"
 
 
-class Resource:
+class Resource():
 
     def __init__(self, resource_id: str, name: str, resource_type: ResourcesType):
 
@@ -19,3 +19,9 @@ class Resource:
         if not isinstance(resource_type, ResourcesType):
             raise TypeError("resource_type must be an instance of ResourcesType")
         self.resource_type = resource_type
+    
+    def __repr__(self):
+        return f"Resource {self.name}"
+
+    def __eq__(self, other):
+        return self.resource_id == other.resource_id
