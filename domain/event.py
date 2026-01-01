@@ -16,7 +16,16 @@ class Event():
         return self.start_time >= other_event.start_time and self.start_time < other_event.end_time
 
     def check_resources_availability(self, other_event):
-        for resource in self.resources:
-            if resource in other_event.resources:
+
+        if self.spot == other_event.spot:
+            return False
+        
+        for w in self.workers:
+            if w in other_event.workers:
                 return False
+        
+        for r in self.resources:
+            if r in other_event.resources:
+                return False
+
         return True

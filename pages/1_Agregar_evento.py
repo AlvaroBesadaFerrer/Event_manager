@@ -11,44 +11,48 @@ from domain.schedule import add_event
 
 st.set_page_config(page_title="Agregar evento", page_icon=":hammer_and_wrench:")
 
-
 st.markdown("# Agregar evento :red_car:")
 st.subheader("Detalles del evento")
 
-spot = st.selectbox(
-    "Lugar del evento:",
-    options = filter_resources_by_type(get_resources(), ResourcesType.Area_de_trabajo),
-    format_func = lambda x: x.name,
-)
-event_type = st.selectbox(
-    "Tipo de evento:",
-    options = filter_resources_by_type(get_resources(), ResourcesType.Tipo_de_evento),
-    format_func = lambda x: x.name,
-)
-workers = st.multiselect(
-    "Trabajadores:",
-    options = filter_resources_by_type(get_resources(), ResourcesType.Trabajador),
-    format_func = lambda x: x.name,
-)
-st.markdown("Herramientas:")
 
-resources = []
-for i in filter_resources_by_type(get_resources(), ResourcesType.Herramienta):
-    if st.checkbox(i.name):
-        resources.append(i)
+all_resources = get_resources()
 
-color = st.color_picker("Color del evento:", value="#3498db")
+with st.form("add_event_form"):
+    spot = st.selectbox(
+        "Lugar del evento:",
+        options=filter_resources_by_type(all_resources, ResourcesType.Area_de_trabajo),
+        format_func=lambda x: x.name,
+    )
 
-current_time = datetime.now(ZoneInfo('America/Havana'))
+    event_type = st.selectbox(
+        "Tipo de evento:",
+        options=filter_resources_by_type(all_resources, ResourcesType.Tipo_de_evento),
+        format_func=lambda x: x.name,
+    )
 
-date = str(st.date_input("Fecha: ", value= current_time))
-start_time = str(st.time_input("Hora de inicio: ", value= current_time))
-end_time = str(st.time_input("Hora de fin: ", value= current_time + timedelta(minutes = 30)))
+    workers = st.multiselect(
+        "Trabajadores:",
+        options=filter_resources_by_type(all_resources, ResourcesType.Trabajador),
+        format_func=lambda x: x.name,
+    )
 
-button = st.button("Agregar evento", on_click=None)
+    st.markdown("Herramientas:")
+    resources = []
+    for i in filter_resources_by_type(all_resources, ResourcesType.Herramienta):
+        if st.checkbox(i.name, key=f"tool_{i.resource_id}"):
+            resources.append(i)
 
-if button:
+    color = st.color_picker("Color del evento:", value="#3498db")
 
+    current_time = datetime.now(ZoneInfo("America/Havana"))
+
+    date = str(st.date_input("Fecha: ", value=current_time))
+    start_time = str(st.time_input("Hora de inicio: ", value=current_time))
+    end_time = str(st.time_input("Hora de fin: ", value=current_time + timedelta(minutes=30)))
+
+    submitted = st.form_submit_button("Agregar evento")
+
+if submitted:
     response = add_event(
         Event(
             id=str(uuid4()),
@@ -65,9 +69,8 @@ if button:
 
     if response:
         st.success("Evento guardado con éxito!", icon="✅")
-    else: 
+    else:
         st.error("Error en las restricciones", icon="🚨")
-
 
 
 # TODO: Add validation for time inputs (end time should be after start time) and midnight work?

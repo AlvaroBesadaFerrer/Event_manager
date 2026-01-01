@@ -13,5 +13,84 @@
         "start_time": "13:42:00",
         "end_time": "14:12:00",
         "color": "#3498db"
+    },
+    {
+        "id": "956839d0-2be7-4fc8-a4f7-fd141c93a683",
+        "spot": "area_1",
+        "event_type": "event_4",
+        "workers": [
+            "worker_3"
+        ],
+        "resources": [
+            "tool_4",
+            "tool_5"
+        ],
+        "start_date": "2026-01-01",
+        "start_time": "16:47:00",
+        "end_time": "17:17:00",
+        "color": "#3498db"
+    },
+    {
+        "id": "23b7da30-a527-46d5-93ee-df36044569de",
+        "spot": "area_2",
+        "event_type": "event_2",
+        "workers": [
+            "worker_1"
+        ],
+        "resources": [
+            "tool_3"
+        ],
+        "start_date": "2026-01-01",
+        "start_time": "16:47:00",
+        "end_time": "17:17:00",
+        "color": "#3498db"
+    },
+    {
+        "id": "03dd0d7a-71f3-4c1b-927f-ecc135cbec55",
+        "spot": "area_1",
+        "event_type": "event_1",
+        "workers": [],
+        "resources": [
+            "tool_6"
+        ],
+        "start_date": "2026-01-01",
+        "start_time": "16:48:00",
+        "end_time": "17:18:00",
+        "color": "#3498db"
+    },
+    {
+        "id": "dbb308e1-e4a2-48cb-a08a-673e6db213f2",
+        "spot": "area_4",
+        "event_type": "event_1",
+        "workers": [],
+        "resources": [],
+        "start_date": "2026-01-01",
+        "start_time": "17:12:00",
+        "end_time": "17:42:00",
+        "color": "#3498db"
+    },
+    {
+        "id": "64783097-3a10-4546-ad86-ad6c05f59912",
+        "spot": "area_3",
+        "event_type": "event_7",
+        "workers": [
+            "worker_2"
+        ],
+        "resources": [],
+        "start_date": "2026-01-01",
+        "start_time": "17:13:00",
+        "end_time": "17:43:00",
+        "color": "#3498db"
+    },
+    {
+        "id": "e34f0f48-b61f-41f4-b892-cdcb65675042",
+        "spot": "area_1",
+        "event_type": "event_1",
+        "workers": [],
+        "resources": [],
+        "start_date": "2026-01-01",
+        "start_time": "23:00:00",
+        "end_time": "23:45:00",
+        "color": "#3498db"
     }
 ]

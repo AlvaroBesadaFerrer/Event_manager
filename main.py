@@ -16,7 +16,7 @@ for event in events:
         start_datetime, end_datetime = parse_start_end_date_time(event)
         items.append({
             "id": event.id,
-            "content": event.event_type,
+            "content": event.event_type.name,
             "start": start_datetime.isoformat(),
             "end": end_datetime.isoformat(),
             "style": f"color: {get_text_color(event.color)}; background-color: {event.color}; border-color: {event.color}",
