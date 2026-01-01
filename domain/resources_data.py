@@ -27,3 +27,8 @@ RESOURCES = [
     Resource("worker_3", "Jose", ResourcesType.Trabajador),
 ]
 
+
+def get_resources():
+    # Return a copy to avoid accidental external mutation
+    return list(RESOURCES)
+

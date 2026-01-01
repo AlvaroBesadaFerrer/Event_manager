@@ -2,8 +2,7 @@ import streamlit as st
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from domain.event import Event
-from json_storage.save_load_data import events
-from domain.resources_data import RESOURCES
+from domain.resources_data import get_resources
 from uuid import uuid4
 from utils.filter_utils import filter_resources_by_type
 from domain.resource import ResourcesType
@@ -18,23 +17,23 @@ st.subheader("Detalles del evento")
 
 spot = st.selectbox(
     "Lugar del evento:",
-    options = filter_resources_by_type(RESOURCES, ResourcesType.Area_de_trabajo),
+    options = filter_resources_by_type(get_resources(), ResourcesType.Area_de_trabajo),
     format_func = lambda x: x.name,
 )
 event_type = st.selectbox(
     "Tipo de evento:",
-    options = filter_resources_by_type(RESOURCES, ResourcesType.Tipo_de_evento),
+    options = filter_resources_by_type(get_resources(), ResourcesType.Tipo_de_evento),
     format_func = lambda x: x.name,
 )
 workers = st.multiselect(
     "Trabajadores:",
-    options = filter_resources_by_type(RESOURCES, ResourcesType.Trabajador),
+    options = filter_resources_by_type(get_resources(), ResourcesType.Trabajador),
     format_func = lambda x: x.name,
 )
 st.markdown("Herramientas:")
 
 resources = []
-for i in filter_resources_by_type(RESOURCES, ResourcesType.Herramienta):
+for i in filter_resources_by_type(get_resources(), ResourcesType.Herramienta):
     if st.checkbox(i.name):
         resources.append(i)
 

@@ -1,4 +1,17 @@
 [
     {
-        "id": "e65c032d-b8da-4b39-a0c6-84330d4f847f",
-        "spot": 
+        "id": "83ddf8f0-96e0-4a78-90e6-d47b1f07d65d",
+        "spot": "area_1",
+        "event_type": "event_2",
+        "workers": [
+            "worker_1"
+        ],
+        "resources": [
+            "tool_3"
+        ],
+        "start_date": "2026-01-01",
+        "start_time": "13:42:00",
+        "end_time": "14:12:00",
+        "color": "#3498db"
+    }
+]

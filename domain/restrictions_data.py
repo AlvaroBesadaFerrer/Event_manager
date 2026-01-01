@@ -1,27 +1,27 @@
 from domain.restrictions import MutualExclusion, CoRequisite
-from utils.filter_utils import filter_resources_by_id
-from .resources_data import RESOURCES
+from utils.filter_utils import filter_resource_by_id
+from .resources_data import get_resources
 
 
 restrictions_data = [
     MutualExclusion(
-        filter_resources_by_id(
-            RESOURCES,
+        filter_resource_by_id(
+            get_resources(),
             "event_1"
-        )[0],
-        filter_resources_by_id(
-            RESOURCES,
+        ),
+        filter_resource_by_id(
+            get_resources(),
             "worker_2"
-        )[0]
+        )
     ),
     CoRequisite(
-        filter_resources_by_id(
-            RESOURCES,
+        filter_resource_by_id(
+            get_resources(),
             "event_2"
-        )[0],
-        filter_resources_by_id(
-            RESOURCES,
+        ),
+        filter_resource_by_id(
+            get_resources(),
             "tool_3"
-        )[0]
+        )
     ),
 ]

@@ -21,4 +21,4 @@ class CoRequisite(Restriction):
         resources = [event.spot] + [event.event_type] + event.workers + event.resources
         print(resources)
         print(self.resource_a, self.resource_b)
-        return self.resource_a in resources and self.resource_b in resources
+        return not(self.resource_a in resources) or self.resource_b in resources
