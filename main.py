@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit_timeline import st_timeline
+from utils.filter_utils import filter_event_by_id
 from utils.time_utils import parse_start_end_date_time
 from utils.color_utils import get_text_color
 from json_storage.save_load_data import load_data
@@ -27,5 +28,7 @@ for event in events:
 
 if items:
     timeline = st_timeline(items, groups=[], options={}, height="300px")
+
 else:
     st.info("No hay eventos para mostrar. Agrega eventos en la seccion 'Agregar evento'.")
+

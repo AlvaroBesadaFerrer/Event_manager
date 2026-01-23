@@ -1,4 +1,4 @@
-from uuid import uuid4
+
 
 class Event():
     def __init__(self, id, spot, event_type, workers, resources, date, end_time, start_time, color):

@@ -1,6 +1,7 @@
-from .restrictions_data import restrictions_data
+from domain.restrictions_data import generate_restrictions
 from json_storage.save_load_data import load_data, save_data
 
+RESTRICTIONS = generate_restrictions()
 
 def add_event(event):
     events = load_data()
@@ -16,7 +17,7 @@ def validate_event(event, events):
 
 
 def check_restrictions(event):
-    for restriction in restrictions_data:
+    for restriction in RESTRICTIONS:
         if not (restriction.is_satisfied(event)):
             return False
     return True

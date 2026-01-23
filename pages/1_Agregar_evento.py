@@ -17,7 +17,10 @@ st.subheader("Detalles del evento")
 
 all_resources = get_resources()
 
-with st.form("add_event_form"):
+
+use_auto_scheduler = st.toggle("Usar planificador automático?")
+
+with st.form("add_event_form", clear_on_submit=True, enter_to_submit=True):
     spot = st.selectbox(
         "Lugar del evento:",
         options=filter_resources_by_type(all_resources, ResourcesType.Area_de_trabajo),
@@ -43,12 +46,13 @@ with st.form("add_event_form"):
             resources.append(i)
 
     color = st.color_picker("Color del evento:", value="#3498db")
-
+    
     current_time = datetime.now(ZoneInfo("America/Havana"))
 
-    date = str(st.date_input("Fecha: ", value=current_time))
-    start_time = str(st.time_input("Hora de inicio: ", value=current_time))
-    end_time = str(st.time_input("Hora de fin: ", value=current_time + timedelta(minutes=30)))
+    if not use_auto_scheduler:
+        date = str(st.date_input("Fecha: ", value=current_time))
+        start_time = str(st.time_input("Hora de inicio: ", value=current_time))
+        end_time = str(st.time_input("Hora de fin: ", value=current_time + timedelta(minutes=30)))
 
     submitted = st.form_submit_button("Agregar evento")
 
@@ -83,3 +87,5 @@ if submitted:
 # Mark as done
 # Font color adjustment based on background color for better readability
 # Emojis de los recursos en la seleccion
+# Review las restricciones bien
+# Hacer Readme con todo lo q tienen q instalar para correrlo

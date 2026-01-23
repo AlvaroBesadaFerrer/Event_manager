@@ -92,5 +92,74 @@
         "start_time": "23:00:00",
         "end_time": "23:45:00",
         "color": "#3498db"
+    },
+    {
+        "id": "ae2e1f56-fdf9-4e6a-be8a-323b49fb6812",
+        "spot": "area_2",
+        "event_type": "event_2",
+        "workers": [],
+        "resources": [
+            "tool_3"
+        ],
+        "start_date": "2026-01-01",
+        "start_time": "19:07:00",
+        "end_time": "19:37:00",
+        "color": "#3498db"
+    },
+    {
+        "id": "f7d7a9f1-430f-474e-9a6b-7966a99ea436",
+        "spot": "area_1",
+        "event_type": "event_1",
+        "workers": [
+            "worker_1"
+        ],
+        "resources": [],
+        "start_date": "2026-01-23",
+        "start_time": "09:52:00",
+        "end_time": "10:22:00",
+        "color": "#3498db"
+    },
+    {
+        "id": "2c8f2511-4490-47e4-bcb8-9c75aa7b6e1a",
+        "spot": "area_2",
+        "event_type": "event_5",
+        "workers": [],
+        "resources": [
+            "tool_1",
+            "tool_7"
+        ],
+        "start_date": "2026-01-23",
+        "start_time": "09:55:00",
+        "end_time": "10:25:00",
+        "color": "#db3484"
+    },
+    {
+        "id": "4a1476e6-f773-47b9-a12f-6575df6ab508",
+        "spot": "area_2",
+        "event_type": "event_5",
+        "workers": [
+            "worker_3"
+        ],
+        "resources": [
+            "tool_1",
+            "tool_7"
+        ],
+        "start_date": "2026-01-23",
+        "start_time": "14:30:00",
+        "end_time": "18:15:00",
+        "color": "#4a4400"
+    },
+    {
+        "id": "4b4c2934-a761-40d0-9399-5e322cac03cb",
+        "spot": "area_1",
+        "event_type": "event_1",
+        "workers": [
+            "worker_1"
+        ],
+        "resources": [],
+        "start_date": "2026-01-23",
+        "start_time": "11:54:00",
+        "end_time": "12:24:00",
+        "color": "#3498db"
     }
 ]

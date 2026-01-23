@@ -20,7 +20,7 @@ class Resource():
         self.resource_type = resource_type
     
     def __repr__(self):
-        return f"Resource {self.name}"
+        return self.name
 
     def __eq__(self, other):
         return self.resource_id == other.resource_id

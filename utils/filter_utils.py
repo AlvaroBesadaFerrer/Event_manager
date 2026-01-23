@@ -15,3 +15,9 @@ def filter_resources_list_by_id(resources, resources_id):
         if r is not None:
             result.append(r)
     return result
+
+def filter_event_by_id(events, event_id):
+    for e in events:
+        if e.id == event_id:
+            return e
+    return None
