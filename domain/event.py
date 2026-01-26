@@ -24,7 +24,6 @@ class Event():
         self.color = color
 
     def intersection(self, other_event):
-        print (self.start_time.__class__, other_event.start_time.__class__, self.end_time.__class__, other_event.end_time.__class__)
         return self.start_time >= other_event.start_time and self.start_time < other_event.end_time and self.date == other_event.date or self.end_time > other_event.start_time and self.end_time <= other_event.end_time and self.date == other_event.date
 
     def check_resources_availability(self, other_event):

@@ -18,21 +18,22 @@
         "color": "#34dbd8"
     },
     {
-        "id": "1d4bda23-d43a-4616-92ce-5864815239df",
-        "spot": "area_3",
-        "event_type": "event_2",
+        "id": "84b82754-c480-4335-888d-0ffc2ce64058",
+        "spot": "area_1",
+        "event_type": "event_1",
         "workers": [
-            "worker_3"
+            "worker_3",
+            "worker_2",
+            "worker_1"
         ],
         "resources": [
             "tool_3",
-            "tool_5",
             "tool_6",
             "tool_7"
         ],
         "start_date": "2026-01-26",
-        "start_time": "14:54:00",
-        "end_time": "15:24:00",
-        "color": "#5a0269"
+        "start_time": "17:51:28",
+        "end_time": "20:51:28",
+        "color": "#ffffff"
     }
 ]

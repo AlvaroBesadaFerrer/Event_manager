@@ -4,7 +4,7 @@ from utils.filter_utils import remove_event_by_id, filter_event_by_id
 from utils.time_utils import parse_start_end_date_time
 from utils.color_utils import get_text_color
 from json_storage.save_load_data import load_data, save_data
-from utils.save_load_utils import parse_event
+from utils.format_utils import show_details
 
 
 st.markdown("# Eventos :blue_car:")
@@ -34,7 +34,7 @@ if items:
     if timeline:
         delete_button = st.button(label=f'Eliminar evento {timeline["content"]} seleccionado?')
 
-        st.table(parse_event(filter_event_by_id(events, timeline["id"])), border=False)
+        st.dataframe(show_details(filter_event_by_id(events, timeline["id"])))
 
         if delete_button:
             events = remove_event_by_id(events, timeline["id"])

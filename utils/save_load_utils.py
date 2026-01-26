@@ -3,21 +3,19 @@ from utils.filter_utils import filter_resource_by_id, filter_resources_list_by_i
 from domain.resources_data import get_resources
 from utils.time_utils import parse_date, parse_time
 
-def resource_to_dict(resource):
-    return resource.resource_id
 
-def resources_to_dict(resources):
-    return [resource_to_dict(r) for r in resources]
+def resources_to_list(resources):
+    return [r.resource_id for r in resources]
 
 
-def parse_event(event):
-    
+def parse_event_with_ids(event):
+
     return {
         "id": event.id,
-        "spot": resource_to_dict(event.spot),
-        "event_type": resource_to_dict(event.event_type),
-        "workers": resources_to_dict(event.workers),
-        "resources": resources_to_dict(event.resources),
+        "spot": event.spot.resource_id,
+        "event_type": event.event_type.resource_id,
+        "workers": resources_to_list(event.workers),
+        "resources": resources_to_list(event.resources),
         "start_date": event.date.strftime('%Y-%m-%d'),
         "start_time": event.start_time.strftime('%H:%M:%S'),
         "end_time": event.end_time.strftime('%H:%M:%S'),
@@ -31,7 +29,7 @@ def parse_save_data(event_data):
     for event in event_data:
         
         parsed_data.append(
-            parse_event(event)
+            parse_event_with_ids(event)
         )
         
     return parsed_data
