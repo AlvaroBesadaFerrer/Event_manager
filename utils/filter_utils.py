@@ -21,3 +21,9 @@ def filter_event_by_id(events, event_id):
         if e.id == event_id:
             return e
     return None
+
+def remove_event_by_id(events, event_id):
+    for e in events:
+        if e.id == event_id:
+            events.remove(e)
+    return events

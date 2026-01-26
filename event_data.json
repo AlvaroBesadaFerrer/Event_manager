@@ -1,165 +1,38 @@
 [
     {
-        "id": "83ddf8f0-96e0-4a78-90e6-d47b1f07d65d",
+        "id": "2b988e24-3786-47ce-a875-c6307899fa32",
         "spot": "area_1",
-        "event_type": "event_2",
+        "event_type": "event_1",
         "workers": [
             "worker_1"
         ],
         "resources": [
-            "tool_3"
-        ],
-        "start_date": "2026-01-01",
-        "start_time": "13:42:00",
-        "end_time": "14:12:00",
-        "color": "#3498db"
-    },
-    {
-        "id": "956839d0-2be7-4fc8-a4f7-fd141c93a683",
-        "spot": "area_1",
-        "event_type": "event_4",
-        "workers": [
-            "worker_3"
-        ],
-        "resources": [
+            "tool_2",
             "tool_4",
-            "tool_5"
-        ],
-        "start_date": "2026-01-01",
-        "start_time": "16:47:00",
-        "end_time": "17:17:00",
-        "color": "#3498db"
-    },
-    {
-        "id": "23b7da30-a527-46d5-93ee-df36044569de",
-        "spot": "area_2",
-        "event_type": "event_2",
-        "workers": [
-            "worker_1"
-        ],
-        "resources": [
-            "tool_3"
-        ],
-        "start_date": "2026-01-01",
-        "start_time": "16:47:00",
-        "end_time": "17:17:00",
-        "color": "#3498db"
-    },
-    {
-        "id": "03dd0d7a-71f3-4c1b-927f-ecc135cbec55",
-        "spot": "area_1",
-        "event_type": "event_1",
-        "workers": [],
-        "resources": [
-            "tool_6"
-        ],
-        "start_date": "2026-01-01",
-        "start_time": "16:48:00",
-        "end_time": "17:18:00",
-        "color": "#3498db"
-    },
-    {
-        "id": "dbb308e1-e4a2-48cb-a08a-673e6db213f2",
-        "spot": "area_4",
-        "event_type": "event_1",
-        "workers": [],
-        "resources": [],
-        "start_date": "2026-01-01",
-        "start_time": "17:12:00",
-        "end_time": "17:42:00",
-        "color": "#3498db"
-    },
-    {
-        "id": "64783097-3a10-4546-ad86-ad6c05f59912",
-        "spot": "area_3",
-        "event_type": "event_7",
-        "workers": [
-            "worker_2"
-        ],
-        "resources": [],
-        "start_date": "2026-01-01",
-        "start_time": "17:13:00",
-        "end_time": "17:43:00",
-        "color": "#3498db"
-    },
-    {
-        "id": "e34f0f48-b61f-41f4-b892-cdcb65675042",
-        "spot": "area_1",
-        "event_type": "event_1",
-        "workers": [],
-        "resources": [],
-        "start_date": "2026-01-01",
-        "start_time": "23:00:00",
-        "end_time": "23:45:00",
-        "color": "#3498db"
-    },
-    {
-        "id": "ae2e1f56-fdf9-4e6a-be8a-323b49fb6812",
-        "spot": "area_2",
-        "event_type": "event_2",
-        "workers": [],
-        "resources": [
-            "tool_3"
-        ],
-        "start_date": "2026-01-01",
-        "start_time": "19:07:00",
-        "end_time": "19:37:00",
-        "color": "#3498db"
-    },
-    {
-        "id": "f7d7a9f1-430f-474e-9a6b-7966a99ea436",
-        "spot": "area_1",
-        "event_type": "event_1",
-        "workers": [
-            "worker_1"
-        ],
-        "resources": [],
-        "start_date": "2026-01-23",
-        "start_time": "09:52:00",
-        "end_time": "10:22:00",
-        "color": "#3498db"
-    },
-    {
-        "id": "2c8f2511-4490-47e4-bcb8-9c75aa7b6e1a",
-        "spot": "area_2",
-        "event_type": "event_5",
-        "workers": [],
-        "resources": [
-            "tool_1",
+            "tool_6",
             "tool_7"
         ],
-        "start_date": "2026-01-23",
-        "start_time": "09:55:00",
-        "end_time": "10:25:00",
-        "color": "#db3484"
+        "start_date": "2026-01-26",
+        "start_time": "15:42:17",
+        "end_time": "17:48:17",
+        "color": "#34dbd8"
     },
     {
-        "id": "4a1476e6-f773-47b9-a12f-6575df6ab508",
-        "spot": "area_2",
-        "event_type": "event_5",
+        "id": "1d4bda23-d43a-4616-92ce-5864815239df",
+        "spot": "area_3",
+        "event_type": "event_2",
         "workers": [
             "worker_3"
         ],
         "resources": [
-            "tool_1",
+            "tool_3",
+            "tool_5",
+            "tool_6",
             "tool_7"
         ],
-        "start_date": "2026-01-23",
-        "start_time": "14:30:00",
-        "end_time": "18:15:00",
-        "color": "#4a4400"
-    },
-    {
-        "id": "4b4c2934-a761-40d0-9399-5e322cac03cb",
-        "spot": "area_1",
-        "event_type": "event_1",
-        "workers": [
-            "worker_1"
-        ],
-        "resources": [],
-        "start_date": "2026-01-23",
-        "start_time": "11:54:00",
-        "end_time": "12:24:00",
-        "color": "#3498db"
+        "start_date": "2026-01-26",
+        "start_time": "14:54:00",
+        "end_time": "15:24:00",
+        "color": "#5a0269"
     }
 ]
