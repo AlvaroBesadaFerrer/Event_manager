@@ -13,33 +13,32 @@ def add_event(event):
     if not response:
         events.append(event)
         save_data(events)
+        return []
     else:
         return response
 
 def validate_event(event, events):
 
-    time_conflict_error = check_time_conflicts(event, events)
-    if time_conflict_error:
-        return time_conflict_error
-    
-    restriction_error = check_restrictions(event)
-    if restriction_error:
-        return restriction_error
+    return check_time_conflicts(event, events) + check_restrictions(event)
 
 
 def check_restrictions(event):
+    return_errors = []
     for restriction in RESTRICTIONS:
         conflict = restriction.is_satisfied(event)
         if conflict:
-            return conflict
+            return_errors.append(conflict)
+    return return_errors
 
 
 def check_time_conflicts(event, events):
+    return_errors = []
     for e in events:
         if event.intersection(e):
             conflict = event.check_resources_availability(e)
             if conflict:
-                return conflict
+                return_errors.extend(conflict)
+    return return_errors
 
 def set_possible_event_date_time(possible_event, start_time, end_time):
     possible_event.date=start_time.date()
@@ -60,19 +59,18 @@ def auto_schedule_event(possible_event, duration):
 
     possible_event = set_possible_event_date_time(possible_event, start_time, end_time)
 
-    while check_time_conflicts(possible_event, events):
-
+    while True:
+        if start_time > max_end_date:
+            return ["No se pudo encontrar un horario adecuado dentro de los próximos 7 días."]
+        
         possible_event = set_possible_event_date_time(possible_event, start_time, end_time)
         
-        if start_time > max_end_date:
-            return False
+        if not check_time_conflicts(possible_event, events):
+            break
         
         start_time += timedelta(minutes=5)
         end_time = start_time + timedelta(minutes=duration)
 
     events.append(possible_event)
     save_data(events)
-    return True
-
-
-
+    return []

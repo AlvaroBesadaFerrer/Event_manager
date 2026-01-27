@@ -26,6 +26,14 @@ end_time = None
 duration = 0
 
 
+def error_message(errors):
+    if not errors:
+        st.success("Evento guardado con éxito!", icon="✅")
+    else:
+        for e in errors:
+            st.error(f'**Error:** {e}', icon="🚨")
+
+
 with st.form("add_event_form"):
     spot = st.selectbox(
         "Lugar del evento:",
@@ -65,8 +73,13 @@ with st.form("add_event_form"):
     submitted = st.form_submit_button("Agregar evento")
 
 if submitted:
+    errors = []
+    if not workers:
+        errors.append("Debe seleccionar al menos un trabajador.")
+    
+    if not use_auto_scheduler and (end_time <= start_time):
+        errors.append("La hora de fin debe ser posterior a la hora de inicio.")
 
-    response = False
     if use_auto_scheduler:
         possible_event = Event(
             id=str(uuid4()),
@@ -80,48 +93,42 @@ if submitted:
             color=color
         )
         
-        response = check_restrictions(possible_event)
+        errors.extend(check_restrictions(possible_event))
         
-        if not response:
-
-            return_value = auto_schedule_event(possible_event, duration)
-            if not return_value:
-                st.error("No se pudo encontrar un horario adecuado dentro de los próximos 7 días.", icon="🚨")
-            else:
-                st.success("Evento guardado con éxito!", icon="✅")
-        else:
-            st.error(f'**Error en las restricciones:** {response}', icon="🚨")
-
+        if not errors:
+            errors.extend(auto_schedule_event(possible_event, duration))
+        
+        error_message(errors)
+        
     else:
-        response = add_event(
-            Event(
-                id=str(uuid4()),
-                spot=spot,
-                event_type=event_type,
-                workers=workers,
-                resources=resources,
-                date=date,
-                start_time=start_time,
-                end_time=end_time,
-                color=color,
+        errors.extend(
+            add_event(
+                Event(
+                    id=str(uuid4()),
+                    spot=spot,
+                    event_type=event_type,
+                    workers=workers,
+                    resources=resources,
+                    date=date,
+                    start_time=start_time,
+                    end_time=end_time,
+                    color=color,
+                )
             )
         )
 
-        if not response:
-            st.success("Evento guardado con éxito!", icon="✅")
-        else:
-            st.error(f'**Error en las restricciones:** {response}', icon="🚨")
+        error_message(errors)
 
 
 # TODO: Add validation for time inputs (end time should be after start time) and midnight work?
-# Add all validations before saving the event
-# Add business logic to avoid overlapping events in the same spot
+#X Add all validations before saving the event
+#X Add business logic to avoid overlapping events in the same spot
 # Consider adding a description field for more event details
-# Implement editing and deleting events functionality
-# Implement when clicking an event in the timeline, show its details
+#X Implement editing and deleting events functionality
+#X Implement when clicking an event in the timeline, show its details
 # AI integration for suggesting how to optimize scheduling based on past events
 # Mark as done
-# Font color adjustment based on background color for better readability
+#X Font color adjustment based on background color for better readability
 # Emojis de los recursos en la seleccion
 # Review las restricciones bien
 # Hacer Readme con todo lo q tienen q instalar para correrlo
