@@ -1,23 +1,5 @@
 [
     {
-        "id": "2b988e24-3786-47ce-a875-c6307899fa32",
-        "spot": "area_1",
-        "event_type": "event_1",
-        "workers": [
-            "worker_1"
-        ],
-        "resources": [
-            "tool_2",
-            "tool_4",
-            "tool_6",
-            "tool_7"
-        ],
-        "start_date": "2026-01-26",
-        "start_time": "15:42:17",
-        "end_time": "17:48:17",
-        "color": "#34dbd8"
-    },
-    {
         "id": "84b82754-c480-4335-888d-0ffc2ce64058",
         "spot": "area_1",
         "event_type": "event_1",
@@ -35,5 +17,81 @@
         "start_time": "17:51:28",
         "end_time": "20:51:28",
         "color": "#ffffff"
+    },
+    {
+        "id": "52adc1ca-8d32-48b6-8ae8-d90ebc7c2719",
+        "spot": "area_1",
+        "event_type": "event_1",
+        "workers": [],
+        "resources": [],
+        "start_date": "2026-01-26",
+        "start_time": "16:58:13",
+        "end_time": "17:58:13",
+        "color": "#3498db"
+    },
+    {
+        "id": "ad14145e-0d84-4fed-ac98-34e5faa473b4",
+        "spot": "area_1",
+        "event_type": "event_1",
+        "workers": [
+            "worker_1"
+        ],
+        "resources": [],
+        "start_date": "2026-01-26",
+        "start_time": "21:58:59",
+        "end_time": "22:58:59",
+        "color": "#3498db"
+    },
+    {
+        "id": "eb4dd3e1-d5e5-4dd6-a641-1d49b3a0a0db",
+        "spot": "area_4",
+        "event_type": "event_1",
+        "workers": [
+            "worker_1"
+        ],
+        "resources": [
+            "tool_2",
+            "tool_4",
+            "tool_5"
+        ],
+        "start_date": "2026-01-26",
+        "start_time": "22:59:44",
+        "end_time": "23:59:44",
+        "color": "#3498db"
+    },
+    {
+        "id": "08fb5e41-2d6d-415f-989c-93450e74c5ab",
+        "spot": "area_1",
+        "event_type": "event_7",
+        "workers": [
+            "worker_3"
+        ],
+        "resources": [
+            "tool_2",
+            "tool_3",
+            "tool_4",
+            "tool_5",
+            "tool_7"
+        ],
+        "start_date": "2026-01-27",
+        "start_time": "00:00:55",
+        "end_time": "01:59:55",
+        "color": "#847894"
+    },
+    {
+        "id": "500b5fd6-4b70-4c63-bd51-ef9eba0ba2e7",
+        "spot": "area_2",
+        "event_type": "event_5",
+        "workers": [
+            "worker_1"
+        ],
+        "resources": [
+            "tool_1",
+            "tool_7"
+        ],
+        "start_date": "2026-01-26",
+        "start_time": "20:55:13",
+        "end_time": "21:55:13",
+        "color": "#011e31"
     }
 ]

@@ -9,30 +9,37 @@ RESTRICTIONS = generate_restrictions()
 
 def add_event(event):
     events = load_data()
-    if validate_event(event, events):
+    response = validate_event(event, events)
+    if not response:
         events.append(event)
         save_data(events)
-        return True
     else:
-        return False
+        return response
 
 def validate_event(event, events):
-    return check_time_conflicts(event, events) and check_restrictions(event)
+
+    time_conflict_error = check_time_conflicts(event, events)
+    if time_conflict_error:
+        return time_conflict_error
+    
+    restriction_error = check_restrictions(event)
+    if restriction_error:
+        return restriction_error
 
 
 def check_restrictions(event):
     for restriction in RESTRICTIONS:
-        if not (restriction.is_satisfied(event)):
-            return False
-    return True
+        conflict = restriction.is_satisfied(event)
+        if conflict:
+            return conflict
 
 
 def check_time_conflicts(event, events):
     for e in events:
         if event.intersection(e):
-            if not event.check_resources_availability(e):
-                return False
-    return True
+            conflict = event.check_resources_availability(e)
+            if conflict:
+                return conflict
 
 def set_possible_event_date_time(possible_event, start_time, end_time):
     possible_event.date=start_time.date()
@@ -53,7 +60,7 @@ def auto_schedule_event(possible_event, duration):
 
     possible_event = set_possible_event_date_time(possible_event, start_time, end_time)
 
-    while not check_time_conflicts(possible_event, events):
+    while check_time_conflicts(possible_event, events):
 
         possible_event = set_possible_event_date_time(possible_event, start_time, end_time)
         

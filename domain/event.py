@@ -29,14 +29,12 @@ class Event():
     def check_resources_availability(self, other_event):
 
         if self.spot == other_event.spot:
-            return False
+            return f'Un evento de {other_event.event_type} esta usando el mismo espacio {self.spot.name} a esa hora'
         
         for w in self.workers:
             if w in other_event.workers:
-                return False
+                return f'{w.name} ya estara trabajando en evento de {other_event.event_type} a esa hora'
         
         for r in self.resources:
             if r in other_event.resources:
-                return False
-
-        return True
+                return f'{r.name} ya se estara usando en evento de {other_event.event_type} a esa hora'

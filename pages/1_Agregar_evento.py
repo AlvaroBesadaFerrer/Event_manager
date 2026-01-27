@@ -79,15 +79,18 @@ if submitted:
             end_time=None,
             color=color
         )
-        if check_restrictions(possible_event):
+        
+        response = check_restrictions(possible_event)
+        
+        if not response:
 
-            response = auto_schedule_event(possible_event, duration)
-            if not response:
+            return_value = auto_schedule_event(possible_event, duration)
+            if not return_value:
                 st.error("No se pudo encontrar un horario adecuado dentro de los próximos 7 días.", icon="🚨")
             else:
                 st.success("Evento guardado con éxito!", icon="✅")
         else:
-            st.error("Error en las restricciones", icon="🚨")
+            st.error(f'**Error en las restricciones:** {response}', icon="🚨")
 
     else:
         response = add_event(
@@ -104,10 +107,10 @@ if submitted:
             )
         )
 
-        if response:
+        if not response:
             st.success("Evento guardado con éxito!", icon="✅")
         else:
-            st.error("Error en las restricciones", icon="🚨")
+            st.error(f'**Error en las restricciones:** {response}', icon="🚨")
 
 
 # TODO: Add validation for time inputs (end time should be after start time) and midnight work?

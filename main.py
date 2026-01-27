@@ -6,6 +6,7 @@ from utils.color_utils import get_text_color
 from json_storage.save_load_data import load_data, save_data
 from utils.format_utils import show_details
 
+st.set_page_config(page_title="Ver eventos", page_icon=":hammer_and_wrench:")
 
 st.markdown("# Eventos :blue_car:")
 

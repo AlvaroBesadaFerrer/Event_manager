@@ -5,12 +5,12 @@ class Restriction():
         self.resource_a = resource_a
         self.resource_b = resource_b
 
-    def is_satisfied(self, event) -> bool:
+    def is_satisfied(self, event) -> str|None:
         raise NotImplementedError()
 
 
 class MutualExclusion(Restriction):
-    def is_satisfied(self, event) -> bool:
+    def is_satisfied(self, event) -> str|None:
         resources = [
             event.spot,
             event.event_type,
@@ -18,10 +18,11 @@ class MutualExclusion(Restriction):
             *event.resources
         ]
 
-        return not (self.resource_a in resources and self.resource_b in resources)
+        if (self.resource_a in resources and self.resource_b in resources):
+            return f'{self.resource_a} no pueden estar a la vez en un evento con {self.resource_b}'
 
 class CoRequisite(Restriction):
-    def is_satisfied(self, event) -> bool:
+    def is_satisfied(self, event) -> str|None:
 
         resources = [
             event.spot,
@@ -30,4 +31,5 @@ class CoRequisite(Restriction):
             *event.resources
         ]
 
-        return not(self.resource_a in resources) or self.resource_b in resources
+        if self.resource_a in resources and  not (self.resource_b in resources):
+            return f'{self.resource_a} necesita estar con {self.resource_b} en el evento'
