@@ -62,12 +62,12 @@ with st.form("add_event_form"):
 
     color = st.color_picker("Color del evento:", value="#3498db")
     
-    current_time = datetime.now(ZoneInfo("America/Havana"))
+    
     
     if not use_auto_scheduler:
-        date = st.date_input("Fecha: ", value=current_time)
-        start_time = st.time_input("Hora de inicio: ", value=current_time)
-        end_time = st.time_input("Hora de fin: ", value=current_time + timedelta(minutes=30))
+        date = st.date_input("Fecha: ")
+        start_time = st.time_input("Hora de inicio: ")
+        end_time = st.time_input("Hora de fin: ")
     else:
         duration = st.slider("Duración del evento (minutos):", min_value=20, max_value=180, value=60)
 
@@ -80,6 +80,10 @@ if submitted:
     
     if not use_auto_scheduler and (end_time <= start_time):
         errors.append("La hora de fin debe ser posterior a la hora de inicio.")
+
+    current_time = datetime.now(ZoneInfo("America/Havana"))
+    if start_time and start_time < current_time.time():
+        errors.append("La hora de inicio tiene que ser posterior a la hora actual")
 
     if use_auto_scheduler:
         possible_event = create_possible_event(

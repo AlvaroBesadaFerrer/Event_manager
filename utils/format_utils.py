@@ -4,8 +4,12 @@ from uuid import uuid4
 def list_to_string(lista):
     # Cambiamos las listas por strings porque los st.dataframe y st.table no soportan listas y da un warning en la consola
     output = ""
-    for elem in lista:
-        output+= elem.name + " "
+    n = len(lista)
+
+    for i in range(n):
+        if i != 0:
+            output+= ", "
+        output+=lista[i].name
 
     return output.strip()
 
