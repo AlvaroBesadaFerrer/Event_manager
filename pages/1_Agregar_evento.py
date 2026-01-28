@@ -5,8 +5,9 @@ from domain.event import Event
 from domain.resources_data import get_resources
 from uuid import uuid4
 from utils.filter_utils import filter_resources_by_type
+from utils.format_utils import create_possible_event
 from domain.resource import ResourcesType
-from domain.schedule import add_event, auto_schedule_event, check_restrictions
+from domain.schedule import add_event, auto_schedule_event, check_restrictions, validate_event
 
 
 st.set_page_config(page_title="Agregar evento", page_icon=":hammer_and_wrench:")
@@ -81,16 +82,12 @@ if submitted:
         errors.append("La hora de fin debe ser posterior a la hora de inicio.")
 
     if use_auto_scheduler:
-        possible_event = Event(
-            id=str(uuid4()),
+        possible_event = create_possible_event(
             spot=spot,
             event_type=event_type,
             workers=workers,
             resources=resources,
-            date=None,
-            start_time=None,
-            end_time=None,
-            color=color
+            color=color,
         )
         
         errors.extend(check_restrictions(possible_event))
@@ -101,21 +98,21 @@ if submitted:
         error_message(errors)
         
     else:
-        errors.extend(
-            add_event(
-                Event(
-                    id=str(uuid4()),
-                    spot=spot,
-                    event_type=event_type,
-                    workers=workers,
-                    resources=resources,
-                    date=date,
-                    start_time=start_time,
-                    end_time=end_time,
-                    color=color,
-                )
-            )
+        possible_event = create_possible_event(
+            spot=spot,
+            event_type=event_type,
+            workers=workers,
+            resources=resources,
+            color=color,
+            date=date,
+            start_time=start_time,
+            end_time=end_time,
         )
+
+        errors.extend(validate_event(possible_event))
+
+        if not errors:
+            errors.extend(add_event(possible_event))
 
         error_message(errors)
 

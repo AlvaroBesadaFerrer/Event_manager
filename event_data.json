@@ -134,5 +134,18 @@
         "start_time": "13:07:47",
         "end_time": "14:07:47",
         "color": "#56056b"
+    },
+    {
+        "id": "57bc52cd-ba66-41ba-a7c7-2a94b6fd7cb2",
+        "spot": "area_1",
+        "event_type": "event_1",
+        "workers": [
+            "worker_1"
+        ],
+        "resources": [],
+        "start_date": "2026-01-27",
+        "start_time": "19:55:00",
+        "end_time": "20:25:00",
+        "color": "#3498db"
     }
 ]

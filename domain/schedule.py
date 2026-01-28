@@ -2,24 +2,20 @@ from domain.restrictions_data import generate_restrictions
 from json_storage.save_load_data import load_data, save_data
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-from domain.event import Event
 
 
 RESTRICTIONS = generate_restrictions()
+events = load_data()
+
 
 def add_event(event):
-    events = load_data()
-    response = validate_event(event, events)
-    if not response:
-        events.append(event)
-        save_data(events)
-        return []
-    else:
-        return response
+    events.append(event)
+    save_data(events)
+    return []
 
-def validate_event(event, events):
+def validate_event(event):
 
-    return check_time_conflicts(event, events) + check_restrictions(event)
+    return check_time_conflicts(event) + check_restrictions(event)
 
 
 def check_restrictions(event):
@@ -31,7 +27,7 @@ def check_restrictions(event):
     return return_errors
 
 
-def check_time_conflicts(event, events):
+def check_time_conflicts(event):
     return_errors = []
     for e in events:
         if event.intersection(e):
@@ -50,8 +46,6 @@ def set_possible_event_date_time(possible_event, start_time, end_time):
 
 def auto_schedule_event(possible_event, duration):
     
-    events = load_data()
-    
     current_time = datetime.now(ZoneInfo("America/Havana"))
     start_time = current_time
     end_time = start_time + timedelta(minutes=duration)
@@ -65,7 +59,7 @@ def auto_schedule_event(possible_event, duration):
         
         possible_event = set_possible_event_date_time(possible_event, start_time, end_time)
         
-        if not check_time_conflicts(possible_event, events):
+        if not check_time_conflicts(possible_event):
             break
         
         start_time += timedelta(minutes=5)
