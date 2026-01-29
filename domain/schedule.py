@@ -1,6 +1,6 @@
 from domain.restrictions_data import generate_restrictions
 from json_storage.save_load_data import load_data, save_data
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from zoneinfo import ZoneInfo
 
 
@@ -37,9 +37,8 @@ def check_time_conflicts(event):
     return return_errors
 
 def set_possible_event_date_time(possible_event, start_time, end_time):
-    possible_event.date=start_time.date()
-    possible_event.start_time=start_time.time()
-    possible_event.end_time=end_time.time()
+    possible_event.start_time=start_time
+    possible_event.end_time=end_time
 
     return possible_event
 
@@ -58,7 +57,6 @@ def auto_schedule_event(possible_event, duration):
             return ["No se pudo encontrar un horario adecuado dentro de los próximos 7 días."]
         
         possible_event = set_possible_event_date_time(possible_event, start_time, end_time)
-        
         if not check_time_conflicts(possible_event):
             break
         
@@ -68,3 +66,32 @@ def auto_schedule_event(possible_event, duration):
     events.append(possible_event)
     save_data(events)
     return []
+
+def check_workers_requirements(workers):
+    errors = []
+    if not workers:
+        errors.append("Debe seleccionar al menos un trabajador.")
+    return errors
+
+def check_time_requirements(use_auto_scheduler, start_time, end_time):
+    errors = []
+
+    if start_time is None or end_time is None:
+        errors.append("Debe proporcionar una fecha y hora válidas.")
+        return errors
+
+    if not use_auto_scheduler and (end_time <= start_time):
+        errors.append("La **hora de fin** debe ser posterior a la **hora de inicio**.")
+
+    current_time = datetime.now(ZoneInfo("America/Havana"))
+    if not use_auto_scheduler and start_time < current_time:
+        errors.append("La **hora de inicio** tiene que ser posterior a la **hora actual**.")
+    
+    return errors
+
+def check_work_hours(start_time, end_time):
+    work_starts = time(8,0)
+    work_ends = time(5,0)
+    
+    #TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+    #ponerlo todo como datetime, no como date y time por separado

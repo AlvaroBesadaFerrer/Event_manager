@@ -1,7 +1,7 @@
 from domain.event import Event
 from utils.filter_utils import filter_resource_by_id, filter_resources_list_by_id
 from domain.resources_data import get_resources
-from utils.time_utils import parse_date, parse_time
+from utils.time_utils import parse_datetime
 
 
 def resources_to_list(resources):
@@ -16,9 +16,8 @@ def parse_event_with_ids(event):
         "event_type": event.event_type.resource_id,
         "workers": resources_to_list(event.workers),
         "resources": resources_to_list(event.resources),
-        "start_date": event.date.strftime('%Y-%m-%d'),
-        "start_time": event.start_time.strftime('%H:%M:%S'),
-        "end_time": event.end_time.strftime('%H:%M:%S'),
+        "start_datetime": event.start_datetime.strftime("%Y-%m-%d %H:%M:%S") if event.start_datetime else None,
+        "end_datetime": event.end_datetime.strftime("%Y-%m-%d %H:%M:%S") if event.end_datetime else None,
         "color": event.color,
     }
 
@@ -37,15 +36,17 @@ def parse_save_data(event_data):
 
 def to_object(data):
     try:
+        start_time = parse_datetime(data["start_time"]) if data.get("start_time") else None
+        end_time = parse_datetime(data["end_time"]) if data.get("end_time") else None
+        
         return Event(
             id=data["id"],
             spot=filter_resource_by_id(get_resources(), data["spot"]),
             event_type=filter_resource_by_id(get_resources(), data["event_type"]),
             workers=filter_resources_list_by_id(get_resources(), data["workers"]),
             resources=filter_resources_list_by_id(get_resources(), data["resources"]),
-            date=parse_date(data["start_date"]),
-            start_time=parse_time(data["start_time"]),
-            end_time=parse_time(data["end_time"]),
+            start_time=start_time,
+            end_time=end_time,
             color=data["color"],
         )
     except KeyError as e:

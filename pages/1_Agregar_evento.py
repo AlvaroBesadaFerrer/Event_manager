@@ -1,13 +1,10 @@
 import streamlit as st
-from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
-from domain.event import Event
 from domain.resources_data import get_resources
-from uuid import uuid4
 from utils.filter_utils import filter_resources_by_type
+from utils.time_utils import parse_start_end_date_time
 from utils.format_utils import create_possible_event
 from domain.resource import ResourcesType
-from domain.schedule import add_event, auto_schedule_event, check_restrictions, validate_event
+from domain.schedule import add_event, auto_schedule_event, check_restrictions, validate_event, check_time_requirements, check_workers_requirements
 
 
 st.set_page_config(page_title="Agregar evento", page_icon=":hammer_and_wrench:")
@@ -32,7 +29,7 @@ def error_message(errors):
         st.success("Evento guardado con éxito!", icon="✅")
     else:
         for e in errors:
-            st.error(f'**Error:** {e}', icon="🚨")
+            st.error(e, icon="🚨")
 
 
 with st.form("add_event_form"):
@@ -63,29 +60,22 @@ with st.form("add_event_form"):
     color = st.color_picker("Color del evento:", value="#3498db")
     
     
-    
     if not use_auto_scheduler:
         date = st.date_input("Fecha: ")
         start_time = st.time_input("Hora de inicio: ")
         end_time = st.time_input("Hora de fin: ")
     else:
-        duration = st.slider("Duración del evento (minutos):", min_value=20, max_value=180, value=60)
+        duration = st.slider("Duración del evento (minutos):", min_value=20, max_value=480, value=60)
 
     submitted = st.form_submit_button("Agregar evento")
 
 if submitted:
-    errors = []
-    if not workers:
-        errors.append("Debe seleccionar al menos un trabajador.")
     
-    if not use_auto_scheduler and (end_time <= start_time):
-        errors.append("La hora de fin debe ser posterior a la hora de inicio.")
-
-    current_time = datetime.now(ZoneInfo("America/Havana"))
-    if start_time and start_time < current_time.time():
-        errors.append("La hora de inicio tiene que ser posterior a la hora actual")
+    errors = []
 
     if use_auto_scheduler:
+        errors.extend(check_workers_requirements(workers))
+
         possible_event = create_possible_event(
             spot=spot,
             event_type=event_type,
@@ -102,15 +92,19 @@ if submitted:
         error_message(errors)
         
     else:
+        submit_start, submit_end = parse_start_end_date_time(date, start_time, end_time)
+        
+        errors.extend(check_workers_requirements(workers))
+        errors.extend(check_time_requirements(use_auto_scheduler, submit_start, submit_end))
+
         possible_event = create_possible_event(
             spot=spot,
             event_type=event_type,
             workers=workers,
             resources=resources,
             color=color,
-            date=date,
-            start_time=start_time,
-            end_time=end_time,
+            start_time=submit_start,
+            end_time=submit_end,
         )
 
         errors.extend(validate_event(possible_event))
@@ -134,3 +128,4 @@ if submitted:
 # Review las restricciones bien
 # Hacer Readme con todo lo q tienen q instalar para correrlo
 # comentarios y tipos de datos
+# Add 2-3 more workers

@@ -15,7 +15,8 @@ items = []
 
 for event in events:
     try:
-        start_datetime, end_datetime = parse_start_end_date_time(event)
+        start_datetime = event.start_time
+        end_datetime = event.end_time
         items.append({
             "id": event.id,
             "content": event.event_type.name,
