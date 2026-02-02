@@ -16,8 +16,8 @@ def parse_event_with_ids(event):
         "event_type": event.event_type.resource_id,
         "workers": resources_to_list(event.workers),
         "resources": resources_to_list(event.resources),
-        "start_datetime": event.start_datetime.strftime("%Y-%m-%d %H:%M:%S") if event.start_datetime else None,
-        "end_datetime": event.end_datetime.strftime("%Y-%m-%d %H:%M:%S") if event.end_datetime else None,
+        "start_time": event.start_time.strftime("%Y-%m-%d %H:%M:%S") if event.start_time else None,
+        "end_time": event.end_time.strftime("%Y-%m-%d %H:%M:%S") if event.end_time else None,
         "color": event.color,
     }
 

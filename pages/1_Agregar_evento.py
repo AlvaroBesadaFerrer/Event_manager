@@ -4,7 +4,7 @@ from utils.filter_utils import filter_resources_by_type
 from utils.time_utils import parse_start_end_date_time
 from utils.format_utils import create_possible_event
 from domain.resource import ResourcesType
-from domain.schedule import add_event, auto_schedule_event, check_restrictions, validate_event, check_time_requirements, check_workers_requirements
+from domain.schedule import add_event, auto_schedule_event, check_work_hours, check_restrictions, validate_event, check_time_requirements, check_workers_requirements
 
 
 st.set_page_config(page_title="Agregar evento", page_icon=":hammer_and_wrench:")
@@ -95,6 +95,7 @@ if submitted:
         submit_start, submit_end = parse_start_end_date_time(date, start_time, end_time)
         
         errors.extend(check_workers_requirements(workers))
+        errors.extend(check_work_hours(submit_start, submit_end))
         errors.extend(check_time_requirements(use_auto_scheduler, submit_start, submit_end))
 
         possible_event = create_possible_event(
@@ -129,3 +130,4 @@ if submitted:
 # Hacer Readme con todo lo q tienen q instalar para correrlo
 # comentarios y tipos de datos
 # Add 2-3 more workers
+# Poner un .py que cuando se ejecute resetee el json y ponga unos datos de prueba en el json con un hora actual

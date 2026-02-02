@@ -8,8 +8,8 @@ class Event():
             event_type,
             workers,
             resources,
-            end_datetime,
-            start_datetime,
+            end_time,
+            start_time,
             color
         ):
         self.id = id
@@ -17,16 +17,16 @@ class Event():
         self.event_type = event_type
         self.workers = workers
         self.resources = resources
-        self.start_datetime = start_datetime
-        self.end_datetime = end_datetime
+        self.start_time = start_time
+        self.end_time = end_time
         self.color = color
 
     def intersection(self, other_event):
-        if self.start_datetime is None or self.end_datetime is None or other_event.start_datetime is None or other_event.end_datetime is None:
+        if self.start_time is None or self.end_time is None or other_event.start_time is None or other_event.end_time is None:
             return False
         
-        same_date = self.start_datetime.date() == other_event.start_datetime.date()
-        overlaps = self.start_datetime < other_event.end_datetime and self.end_datetime > other_event.start_datetime
+        same_date = self.start_time.date() == other_event.start_time.date()
+        overlaps = self.start_time < other_event.end_time and self.end_time > other_event.start_time
         return same_date and overlaps
 
     def check_resources_availability(self, other_event):

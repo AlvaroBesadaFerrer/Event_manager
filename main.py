@@ -15,13 +15,13 @@ items = []
 
 for event in events:
     try:
-        start_datetime = event.start_time
-        end_datetime = event.end_time
+        start_time = event.start_time
+        end_time = event.end_time
         items.append({
             "id": event.id,
             "content": event.event_type.name,
-            "start": start_datetime.isoformat(),
-            "end": end_datetime.isoformat(),
+            "start": start_time.isoformat(),
+            "end": end_time.isoformat(),
             "selectable": True,
             "style": f"color: {get_text_color(event.color)}; background-color: {event.color}; border-color: {event.color}",
         })
@@ -40,8 +40,8 @@ if items:
         if delete_button:
             events = remove_event_by_id(events, timeline["id"])
             save_data(events)
-            st.success("Evento eliminado. Los cambios van a ser visibles al refrescar")
-            #st.rerun()
+            # st.success("Evento eliminado. Los cambios van a ser visibles al refrescar")
+            st.rerun()
 
 else:
     st.info("No hay eventos para mostrar. Agrega eventos en la seccion 'Agregar evento'.")

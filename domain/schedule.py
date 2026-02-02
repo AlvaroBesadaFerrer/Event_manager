@@ -43,6 +43,16 @@ def set_possible_event_date_time(possible_event, start_time, end_time):
     return possible_event
 
 
+def check_work_hours(start_time, end_time):
+    work_starts = time(8,0)
+    work_ends = time(17,0)
+    
+    if (start_time.time() < work_starts or end_time.time() > work_ends) or (start_time.date() != end_time.date()):
+        return ["Hora de inicio o de fin fuera del horario de trabajo (de 8:00 am a 5:00 pm)"]
+    else:
+        return []
+    
+
 def auto_schedule_event(possible_event, duration):
     
     current_time = datetime.now(ZoneInfo("America/Havana"))
@@ -57,7 +67,7 @@ def auto_schedule_event(possible_event, duration):
             return ["No se pudo encontrar un horario adecuado dentro de los próximos 7 días."]
         
         possible_event = set_possible_event_date_time(possible_event, start_time, end_time)
-        if not check_time_conflicts(possible_event):
+        if not check_time_conflicts(possible_event) and not check_work_hours(start_time, end_time):
             break
         
         start_time += timedelta(minutes=5)
@@ -83,15 +93,8 @@ def check_time_requirements(use_auto_scheduler, start_time, end_time):
     if not use_auto_scheduler and (end_time <= start_time):
         errors.append("La **hora de fin** debe ser posterior a la **hora de inicio**.")
 
-    current_time = datetime.now(ZoneInfo("America/Havana"))
-    if not use_auto_scheduler and start_time < current_time:
-        errors.append("La **hora de inicio** tiene que ser posterior a la **hora actual**.")
+    # current_time = datetime.now(ZoneInfo("America/Havana"))
+    # if not use_auto_scheduler and start_time < current_time:
+    #    errors.append("La **hora de inicio** tiene que ser posterior a la **hora actual**.")
     
     return errors
-
-def check_work_hours(start_time, end_time):
-    work_starts = time(8,0)
-    work_ends = time(5,0)
-    
-    #TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-    #ponerlo todo como datetime, no como date y time por separado
