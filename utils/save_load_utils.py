@@ -5,11 +5,12 @@ from utils.time_utils import parse_datetime
 
 
 def resources_to_list(resources):
+    """Convierte una lista de recursos en una lista de IDs de recursos"""
     return [r.resource_id for r in resources]
 
 
 def parse_event_with_ids(event):
-
+    """Convierte un objeto Event en un diccionario con los IDs de los recursos en lugar de objetos de recursos completos"""
     return {
         "id": event.id,
         "spot": event.spot.resource_id,
@@ -23,6 +24,7 @@ def parse_event_with_ids(event):
 
 
 def parse_save_data(event_data):
+    """Convierte los datos de eventos en un formato más fácil para guardar"""
     parsed_data = []
 
     for event in event_data:
@@ -35,27 +37,38 @@ def parse_save_data(event_data):
 
 
 def to_object(data):
+    """Convierte un diccionario de datos guardados en un objeto Event"""
+
+    spot = filter_resource_by_id(get_resources(), data["spot"])
+    event_type = filter_resource_by_id(get_resources(), data["event_type"])
+
+    if spot is None or event_type is None:
+        return None
+    
     try:
         start_time = parse_datetime(data["start_time"]) if data.get("start_time") else None
         end_time = parse_datetime(data["end_time"]) if data.get("end_time") else None
         
         return Event(
             id=data["id"],
-            spot=filter_resource_by_id(get_resources(), data["spot"]),
-            event_type=filter_resource_by_id(get_resources(), data["event_type"]),
+            spot=spot,
+            event_type=event_type,
             workers=filter_resources_list_by_id(get_resources(), data["workers"]),
             resources=filter_resources_list_by_id(get_resources(), data["resources"]),
             start_time=start_time,
             end_time=end_time,
             color=data["color"],
         )
-    except KeyError as e:
-        raise ValueError(f"Invalid saved data, missing key: {e}")
+    except (KeyError, ValueError, TypeError) as e:  # Para manejar de errores si faltan claves o hay errores en el JSON porque no se guardó bien o se editó mal
+        return None
 
 def load_events_from_dict(event_data):
+    """Carga una lista de eventos desde una lista de diccionarios de datos guardados"""
     
     return_data = []
     for e in event_data:
-        return_data.append(to_object(e))
-    
+        obj = to_object(e)
+        if obj:
+            return_data.append(obj)
+
     return return_data

@@ -17,7 +17,7 @@ st.subheader("Detalles del evento")
 all_resources = get_resources()
 
 
-use_auto_scheduler = st.toggle("Usar planificador automático?", value=False)
+use_auto_scheduler = st.toggle("Usar planificador automático?", value=False)  # Botón para usar el planificador automático
 
 date = None
 start_time = None
@@ -26,6 +26,8 @@ duration = 0
 
 
 def error_message(errors):
+    """Muestra mensajes de éxito o error según la lista de errores, cada error por separado y todos los errores al mismo tiempo"""
+    
     if not errors:
         st.success("Evento guardado con éxito!", icon="✅")
     else:
@@ -33,11 +35,11 @@ def error_message(errors):
             st.error(e, icon="🚨")
 
 
-with st.form("add_event_form"):
+with st.form("add_event_form"):  # Formulario con cada uno de los campos para agregar un evento
     spot = st.selectbox(
         "Lugar del evento:",
         options=filter_resources_by_type(all_resources, ResourcesType.Area_de_trabajo),
-        format_func=lambda x: x.name,
+        format_func=lambda x: x.name,  # Muestra el nombre del recurso en lugar del objeto completo
     )
 
     event_type = st.selectbox(
@@ -54,14 +56,14 @@ with st.form("add_event_form"):
 
     st.markdown("Herramientas:")
     resources = []
-    for i in filter_resources_by_type(all_resources, ResourcesType.Herramienta):
+    for i in filter_resources_by_type(all_resources, ResourcesType.Herramienta):  # Muestra una casilla de verificación para cada herramienta
         if st.checkbox(i.name, key=f"tool_{i.resource_id}"):
             resources.append(i)
 
-    color = st.color_picker("Color del evento:", value="#3498db")
+    color = st.color_picker("Color del evento:", value="#3498db")  # Selector de color para el evento
     
     
-    if not use_auto_scheduler:
+    if not use_auto_scheduler:  # Si no se usa el planificador automático, se muestran los campos para la fecha y hora de inicio y fin, de lo contrario se muestra el campo para la duración
         date = st.date_input("Fecha: ")
         start_time = st.time_input("Hora de inicio: ")
         end_time = st.time_input("Hora de fin: ")
@@ -74,7 +76,7 @@ if submitted:
     
     errors = []
 
-    if use_auto_scheduler:
+    if use_auto_scheduler:  # Si se usa el planificador automático, se validan los trabajadores y restricciones, y se intenta programar automáticamente el evento
         errors.extend(check_workers_requirements(workers))
 
         possible_event = create_possible_event(
@@ -92,7 +94,7 @@ if submitted:
         
         error_message(errors)
         
-    else:
+    else:  # Si no se usa el planificador automático, se validan los datos ingresados y se intenta agregar el evento en el horario seleccionado
         submit_start, submit_end = parse_start_end_date_time(date, start_time, end_time)
         
         errors.extend(check_workers_requirements(workers))
@@ -117,17 +119,6 @@ if submitted:
         error_message(errors)
 
 
-# TODO: Add validation for time inputs (end time should be after start time) and midnight work?
-#X Add all validations before saving the event
-#X Add business logic to avoid overlapping events in the same spot
-# Consider adding a description field for more event details
-#X Implement editing and deleting events functionality
-#X Implement when clicking an event in the timeline, show its details
-# AI integration for suggesting how to optimize scheduling based on past events
-# Mark as done
-#X Font color adjustment based on background color for better readability
-# Emojis de los recursos en la seleccion
-# Review las restricciones bien
 # Hacer Readme con todo lo q tienen q instalar para correrlo
 # comentarios y tipos de datos
 # Add 2-3 more workers

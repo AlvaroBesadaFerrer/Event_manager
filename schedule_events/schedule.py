@@ -7,24 +7,30 @@ from schedule_events.validators import check_time_conflicts, check_restrictions,
 events = load_data()
 
 def add_event(event):
+    """Agrega un evento después de validar conflictos de tiempo y restricciones"""
     events.append(event)
     save_data(events)
     return []
 
 
 def validate_event(event):
+    """Valida un evento comprobando conflictos de tiempo y restricciones"""
+
     return check_time_conflicts(event, events) + check_restrictions(event)
 
 
 def set_possible_event_date_time(possible_event, start_time, end_time):
-    possible_event.start_time=start_time
-    possible_event.end_time=end_time
+    """Va cambiando la fecha y hora de inicio y fin de un evento cuando se esta programando automáticamente"""
+
+    possible_event.start_time = start_time
+    possible_event.end_time = end_time
 
     return possible_event
     
 
 def auto_schedule_event(possible_event, duration):
-    
+    """Programa automáticamente un evento buscando un horario adecuado dentro de los próximos 7 días"""
+
     current_time = datetime.now(ZoneInfo("America/Havana"))
     start_time = current_time
     end_time = start_time + timedelta(minutes=duration)

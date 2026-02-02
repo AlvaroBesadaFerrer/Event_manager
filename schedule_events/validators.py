@@ -5,6 +5,7 @@ from datetime import time
 RESTRICTIONS = generate_restrictions()
 
 def check_restrictions(event):
+    """Valida todas las restricciones para un evento y devuelve una lista de mensajes de error si alguna no se cumple"""
     return_errors = []
     for restriction in RESTRICTIONS:
         conflict = restriction.is_satisfied(event)
@@ -14,6 +15,7 @@ def check_restrictions(event):
 
 
 def check_time_conflicts(event, events):
+    """Valida conflictos de tiempo entre un evento y la lista de eventos y devuelve una lista de mensajes de error para todos los conflictos encontrados"""
     return_errors = []
     for e in events:
         if event.intersection(e):
@@ -24,6 +26,7 @@ def check_time_conflicts(event, events):
 
 
 def check_work_hours(start_time, end_time):
+    """Valida que un evento esté dentro del horario laboral (8:00 am a 5:00 pm) y devuelve un mensaje de error si no lo está"""
     work_starts = time(8,0)
     work_ends = time(17,0)
     
@@ -34,6 +37,7 @@ def check_work_hours(start_time, end_time):
 
 
 def check_workers_requirements(workers):
+    """Valida que se haya seleccionado al menos un trabajador para el evento"""
     errors = []
     if not workers:
         errors.append("Debe seleccionar al menos un trabajador.")
@@ -41,6 +45,7 @@ def check_workers_requirements(workers):
 
 
 def check_time_requirements(use_auto_scheduler, start_time, end_time):
+    """Valida que las horas de inicio y fin sean correctas según si se usa o no el programador automático"""
     errors = []
 
     if start_time is None or end_time is None:
