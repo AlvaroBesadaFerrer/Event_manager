@@ -13,7 +13,7 @@ events = load_data()
 
 items = []
 
-for event in events:
+for event in events:  # Recorre cada evento cargado y lo agrega a la lista de items para mostrarlo en la línea de tiempo
     try:
         start_time = event.start_time
         end_time = event.end_time
@@ -23,16 +23,16 @@ for event in events:
             "start": start_time.isoformat(),
             "end": end_time.isoformat(),
             "selectable": True,
-            "style": f"color: {get_text_color(event.color)}; background-color: {event.color}; border-color: {event.color}",
+            "style": f"color: {get_text_color(event.color)}; background-color: {event.color}; border-color: {event.color}",  # Aquí establecemos el color del texto y el fondo de cada evento en la línea de tiempo
         })
     except (KeyError, ValueError) as e:
         st.warning(f"Error parsing event: {e}")
         continue
 
-if items:
+if items:  # Si hay eventos para mostrar, renderiza la línea de tiempo
     timeline = st_timeline(items, groups=[], options={}, height="300px")
 
-    if timeline:
+    if timeline:  # Si se selecciona un evento en la línea de tiempo, muestra sus detalles y la opción de eliminarlo
         delete_button = st.button(label=f'Eliminar evento {timeline["content"]} seleccionado?')
 
         st.dataframe(show_details(filter_event_by_id(events, timeline["id"])))

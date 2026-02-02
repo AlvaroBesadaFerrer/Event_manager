@@ -90,5 +90,34 @@
         "start_time": "2026-02-03 11:53:01",
         "end_time": "2026-02-03 16:58:01",
         "color": "#380d46"
+    },
+    {
+        "id": "31b47a7a-e9dc-40b3-a2b9-4581f5ebfb3e",
+        "spot": "area_1",
+        "event_type": "event_1",
+        "workers": [
+            "worker_1"
+        ],
+        "resources": [
+            "tool_2",
+            "tool_7"
+        ],
+        "start_time": "2026-02-04 08:01:27",
+        "end_time": "2026-02-04 10:37:27",
+        "color": "#00f3ca"
+    },
+    {
+        "id": "66854601-3653-4b09-aba4-f0678de2e920",
+        "spot": "area_3",
+        "event_type": "event_4",
+        "workers": [
+            "worker_2"
+        ],
+        "resources": [
+            "tool_1"
+        ],
+        "start_time": "2026-02-02 10:12:00",
+        "end_time": "2026-02-02 12:15:00",
+        "color": "#969933"
     }
 ]

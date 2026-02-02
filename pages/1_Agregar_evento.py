@@ -4,7 +4,8 @@ from utils.filter_utils import filter_resources_by_type
 from utils.time_utils import parse_start_end_date_time
 from utils.format_utils import create_possible_event
 from domain.resource import ResourcesType
-from domain.schedule import add_event, auto_schedule_event, check_work_hours, check_restrictions, validate_event, check_time_requirements, check_workers_requirements
+from schedule_events.schedule import add_event, auto_schedule_event,  validate_event
+from schedule_events.validators import check_work_hours, check_restrictions, check_time_requirements, check_workers_requirements
 
 
 st.set_page_config(page_title="Agregar evento", page_icon=":hammer_and_wrench:")
