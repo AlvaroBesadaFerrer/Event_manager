@@ -21,7 +21,7 @@ class MutualExclusion(Restriction):
         ]
 
         if (self.resource_a in resources and self.resource_b in resources):
-            return f'**{self.resource_a}** no pueden estar a la vez en un evento con **{self.resource_b}**'
+            return f'**{self.resource_a}** no puede estar en un evento con **{self.resource_b}**'
 
 class CoRequisite(Restriction):
     """Restricción que requiere que dos recursos estén presentes juntos en el mismo evento"""

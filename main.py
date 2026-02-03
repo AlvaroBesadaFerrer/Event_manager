@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit_timeline import st_timeline
 from utils.filter_utils import remove_event_by_id, filter_event_by_id
-from utils.time_utils import parse_start_end_date_time
 from utils.color_utils import get_text_color
 from json_storage.save_load_data import load_data, save_data
 from utils.format_utils import show_details

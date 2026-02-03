@@ -25,6 +25,9 @@ RESOURCES = [
     Resource("worker_1", "Juan", ResourcesType.Trabajador),
     Resource("worker_2", "Pedro", ResourcesType.Trabajador),
     Resource("worker_3", "José", ResourcesType.Trabajador),
+    Resource("worker_4", "Luisa", ResourcesType.Trabajador),
+    Resource("worker_5", "Sofía", ResourcesType.Trabajador),
+    Resource("worker_6", "Frank", ResourcesType.Trabajador),
 ]
 
 

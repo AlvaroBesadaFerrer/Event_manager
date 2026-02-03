@@ -1,5 +1,13 @@
 # Lista de restricciones para cada recurso o evento en el dominio
 # Cada evento tiene una lista de recursos requeridos y una lista de recursos prohibidos
+"""
+Todas las restricciones posibles se pueden configurar entre áreas de trabajo, trabajadores, tipos de evento y herramientas
+en este diccionario. Cada clave es el ID de un recurso (trabajadores, áreas de trabajo, herramientas, tipos de evento),
+y su valor es otro diccionario con dos listas:
+- "required": lista de IDs de recursos que deben estar presentes si el recurso clave está presente.
+- "forbidden": lista de IDs de recursos que no deben estar presentes si el recurso clave está presente.
+Estas restricciones se utilizan para generar las instancias de las clases de restricción en `restrictions_data.py`.
+"""
 
 RESTRICTIONS_CONFIG = {
 
@@ -38,5 +46,13 @@ RESTRICTIONS_CONFIG = {
     "event_9": {
         "required": ["area_1", "worker_3", "tool_3", "tool_6", "tool_5"],
         "forbidden": [],
+    },
+    "worker_4": {
+        "required": ["tool_5"],
+        "forbidden": ["event_3", "event_5"],
+    },
+    "worker_5": {
+        "required": [],
+        "forbidden": ["worker_1", "event_7", "tool_1"],
     },
 }

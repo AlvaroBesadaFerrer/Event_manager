@@ -119,7 +119,6 @@ if submitted:
         error_message(errors)
 
 
-# Hacer Readme con todo lo q tienen q instalar para correrlo
-# comentarios y tipos de datos
-# Add 2-3 more workers
+# Hacer Readme con todo lo q tienen q instalar para correrlo y un requirements.txt
+# tipos de datos
 # Poner un .py que cuando se ejecute resetee el json y ponga unos datos de prueba en el json con un hora actual
