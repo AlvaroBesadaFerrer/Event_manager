@@ -3,9 +3,11 @@ from zoneinfo import ZoneInfo
 
 
 def parse_datetime(time_str):
+    """Convierte de una string de tiempo en un objeto datetime"""
     return datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S").replace(tzinfo=ZoneInfo("America/Havana"))
 
 def parse_start_end_date_time(date, start_time, end_time):
+    """Convierte una fecha y horas de inicio y fin en objetos datetime"""
     if date is None or start_time is None or end_time is None:
         return None, None
     

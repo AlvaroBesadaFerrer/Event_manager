@@ -1,3 +1,6 @@
+# Lista de restricciones para cada recurso o evento en el dominio
+# Cada evento tiene una lista de recursos requeridos y una lista de recursos prohibidos
+
 RESTRICTIONS_CONFIG = {
 
     "event_1": {

@@ -5,6 +5,7 @@ from .restrictions_config import RESTRICTIONS_CONFIG as config
 
 
 def generate_restrictions():
+    """Genera las restricciones del dominio a partir de la configuración definida en RESTRICTIONS_CONFIG"""
     resources = get_resources()
     restrictions = []
 

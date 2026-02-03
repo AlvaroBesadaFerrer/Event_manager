@@ -1,6 +1,5 @@
-
-
 class Event():
+    """Clase que representa un evento en el sistema de gestión de eventos"""
     def __init__(
             self, 
             id, 
@@ -22,6 +21,7 @@ class Event():
         self.color = color
 
     def intersection(self, other_event):
+        """Verifica si este evento coincide con otro evento en la misma fecha"""
         if self.start_time is None or self.end_time is None or other_event.start_time is None or other_event.end_time is None:
             return False
         
@@ -30,6 +30,7 @@ class Event():
         return same_date and overlaps
 
     def check_resources_availability(self, other_event):
+        """Verifica si los recursos de este evento están disponibles en comparación con otro evento"""
         problems = []
         if self.spot == other_event.spot:
             problems.append(f'Un evento de **{other_event.event_type}** esta usando el mismo espacio **{self.spot.name}** a esa hora')
