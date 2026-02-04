@@ -2,7 +2,18 @@
 
 ## Dominio
 
-Se implementó un sistema de gestión de eventos para un taller mecánico. El taller realiza trabajos en vehículos (eventos) que requieren espacios físicos (áreas de trabajo), trabajadores especializados y herramientas específicas. El objetivo es evitar conflictos de recursos (dos eventos no pueden usar el mismo recurso al mismo tiempo) y cumplir restricciones configuradas.
+Se implementó un sistema de gestión de eventos para un **taller mecánico**. El taller realiza trabajos en vehículos (eventos) que requieren espacios físicos (áreas de trabajo), trabajadores especializados y herramientas específicas. 
+
+### ¿Por qué elegí un taller mecánico?
+
+Combina múltiples tipos de recursos (espacios, personas, herramientas) que deben coordinarse
+Cada tipo de trabajo tiene requisitos específicos (ej: soldadura requiere trabajadores y herramientas especializadas)
+Los recursos son limitados y compartidos, generando conflictos realistas
+Es un dominio que existe en el mundo real y puede beneficiarse de esta solución
+
+### Objetivo
+
+Evitar conflictos de recursos (dos eventos no pueden usar el mismo recurso al mismo tiempo) y cumplir restricciones configuradas que reflejan las reglas operacionales del taller.
 
 ## Recursos
 
@@ -16,32 +27,74 @@ Existen 4 tipos de recursos:
 
 4. **Herramientas** (7 herramientas): Compresor, Caja de herramientas, Planta de soldar, Gato hidráulico, Guantes de trabajo, Careta para soldar, Lentes de seguridad.
 
-## Restricciones
+## Tipos de Restricciones Implementadas
 
-- Evento “Reparaciones eléctricas”: Requiere que el trabajador Juan esté asignado. No puede realizarse en el área Espacio para pintura.
+El sistema implementa dos tipos principales de restricciones, como se requiere en el proyecto:
 
-- Evento “Soldadura en la carrocería”: Requiere al trabajador José. Requiere las herramientas Careta para soldar, Planta de soldar y Guantes de trabajo. No puede realizarse en el área Espacio para pintura.
+### 1. **Restricción de Co-requisito (Inclusión)**
+Un recurso requiere que otro recurso específico esté presente en el mismo evento.
 
-- Evento “Arreglo de Mecánica”: Requiere al trabajador Pedro. Requiere la Caja de herramientas. No puede realizarse en el área Espacio con rampa. No puede realizarse en el área Espacio para pintura.
+**Ejemplos en el taller:**
+- Evento "Soldadura en la carrocería" requiere trabajador José + herramientas (Careta, Planta de soldar, Guantes)
+- Evento "Pintar exterior" requiere área "Espacio para pintura" + Compresor + Lentes de seguridad
+- Trabajadora Luisa requiere Guantes de trabajo si participa en cualquier evento
 
-- Evento “Aspirar interior del auto”: Requiere el Compresor. No puede realizarse en el área Espacio con rampa. No puede realizarse en el área Espacio para pintura.
+**Implementación:** Clase `CoRequisite` en `domain/restrictions.py`
 
-- Evento “Pintar exterior del auto”: Requiere el área Espacio para pintura. Requiere el Compresor. Requiere los Lentes de seguridad. No puede ser realizado por el trabajador Pedro.
+### 2. **Restricción de Exclusión Mutua**
+Dos recursos no pueden estar presentes en el mismo evento.
 
-- Evento “Cambio de aceite del motor”: Requiere el Gato hidráulico. No puede realizarse en el área Espacio para pintura.
+**Ejemplos en el taller:**
+- Evento "Reparaciones eléctricas" no puede realizarse en "Espacio para pintura"
+- Trabajadora Sofía no puede trabajar junto a Juan
+- Trabajadora Sofía no puede usar el Compresor
 
-- Evento “Arreglar dirección”: Requiere el área Espacio con rampa. Requiere la Caja de herramientas. Requiere el Gato hidráulico. No puede ser realizado por el trabajador Juan.
+**Implementación:** Clase `MutualExclusion` en `domain/restrictions.py`
 
-- Evento “Revisar transmisión”: Requiere el área Espacio con rampa. Requiere la Caja de herramientas. No tiene restricciones de recursos prohibidos.
+## Restricciones Detalladas por Recurso
 
-- Evento “Soldadura en el tubo de escape”: Requiere el área Espacio con rampa. Requiere al trabajador José. Requiere la Planta de soldar, la Careta para soldar y los Guantes de trabajo. No tiene restricciones de recursos prohibidos.
+- Evento "Reparaciones eléctricas": Requiere que el trabajador Juan esté asignado. No puede realizarse en el área Espacio para pintura.
+
+- Evento "Soldadura en la carrocería": Requiere al trabajador José. Requiere las herramientas Careta para soldar, Planta de soldar y Guantes de trabajo. No puede realizarse en el área Espacio para pintura.
+
+- Evento "Arreglo de Mecánica": Requiere al trabajador Pedro. Requiere la Caja de herramientas. No puede realizarse en el área Espacio con rampa. No puede realizarse en el área Espacio para pintura.
+
+- Evento "Aspirar interior del auto": Requiere el Compresor. No puede realizarse en el área Espacio con rampa. No puede realizarse en el área Espacio para pintura.
+
+- Evento "Pintar exterior del auto": Requiere el área Espacio para pintura. Requiere el Compresor. Requiere los Lentes de seguridad. No puede ser realizado por el trabajador Pedro.
+
+- Evento "Cambio de aceite del motor": Requiere el Gato hidráulico. No puede realizarse en el área Espacio para pintura.
+
+- Evento "Arreglar dirección": Requiere el área Espacio con rampa. Requiere la Caja de herramientas. Requiere el Gato hidráulico. No puede ser realizado por el trabajador Juan.
+
+- Evento "Revisar transmisión": Requiere el área Espacio con rampa. Requiere la Caja de herramientas. No tiene restricciones de recursos prohibidos.
+
+- Evento "Soldadura en el tubo de escape": Requiere el área Espacio con rampa. Requiere al trabajador José. Requiere la Planta de soldar, la Careta para soldar y los Guantes de trabajo. No tiene restricciones de recursos prohibidos.
 
 - Trabajadora Luisa: Requiere el uso de Guantes de trabajo. No puede participar en el evento Arreglo de Mecánica. No puede participar en el evento Pintar exterior del auto.
 
 - Trabajadora Sofía: No puede trabajar junto a Juan. No puede participar en el evento Arreglar dirección. No puede utilizar el Compresor.
 
+### Configuración de Restricciones
+
 La configuración completa está en `domain/restrictions_config.py` y `domain/restrictions_data.py`.
-Todas las restricciones posibles se pueden configurar entre áreas de trabajo, trabajadores, tipos de evento y herramientas en `domain/restrictions_config.py`. No tiene que ser neccesariamente restricciones por cada tipo de evento o cada trabajador, puede ser entre cualquiera de estos objetos.
+
+**Cómo modificar restricciones:**
+1. Abre `domain/restrictions_config.py`
+2. Cada clave es el ID de un recurso (trabajadores, áreas, herramientas, tipos de evento)
+3. Cada recurso tiene dos listas:
+   - `"required"`: recursos que deben estar presentes (Co-requisito)
+   - `"forbidden"`: recursos que no pueden estar presentes (Exclusión Mutua)
+
+**Ejemplo:**
+```python
+"event_5": {
+    "required": ["area_2", "tool_1", "tool_7"],  # Requiere área 2, compresor y lentes
+    "forbidden": ["worker_2"],                    # No puede ser realizado por worker_2
+}
+```
+
+Todas las restricciones posibles se pueden configurar entre áreas de trabajo, trabajadores, tipos de evento y herramientas. No tiene que ser necesariamente restricciones por cada tipo de evento o cada trabajador, puede ser entre cualquiera de estos objetos.
 
 ## Validaciones Implementadas
 
@@ -71,6 +124,59 @@ Todas las restricciones posibles se pueden configurar entre áreas de trabajo, t
 7. **Ver detalles por recurso**: Muestra la agenda de cada recurso (tipo de evento en el que se usa, hora de inicio y hora de fin del evento)
 
 8. **Persistencia en JSON**: Todos los eventos se guardan en `event_data.json`.
+
+## Guía de Uso
+
+### Página Principal (main.py)
+1. **Ver calendario**: Al abrir la aplicación, se muestra una línea de tiempo con todos los eventos programados
+2. **Seleccionar evento**: Al hacer clic en cualquier evento puede ver sus detalles
+3. **Eliminar evento**: Después de seleccionar un evento, puede eliminarlo con el botón "Eliminar evento"
+
+### Agregar Evento (1_Agregar_evento.py)
+1. **Selecciona el lugar**: Elija una de las 4 áreas de trabajo disponibles
+2. **Selecciona el tipo de evento**: Elija uno de los 9 tipos de trabajos
+3. **Selecciona trabajadores**: Puede seleccionar uno o más trabajadores
+4. **Selecciona herramientas**: Marque las herramientas necesarias
+5. **Elige color**: Personalice el color del evento en la línea de tiempo
+6. **Elige horario**:
+   - **Opción manual**: Especifique la fecha, hora de inicio y hora de fin
+   - **Opción automática**: El sistema busca automáticamente el próximo horario disponible en los próximos 7 días
+7. **Envía el formulario**: El sistema valida automáticamente todas las restricciones y conflictos
+
+**Ejemplo de flujo manual:**
+- Área: "Espacio con rampa"
+- Tipo: "Arreglar dirección"
+- Trabajadores: "Pedro"
+- Herramientas: "Caja de herramientas", "Gato hidráulico"
+- Fecha: 2026-02-05
+- Hora inicio: 09:00
+- Hora fin: 11:30
+- El sistema valida que Pedro esté disponible, que el área esté libre, y que todas las restricciones se cumplan
+
+**Ejemplo de flujo automático:**
+- Área: "Espacio para pintura"
+- Tipo: "Pintar exterior del auto"
+- Trabajadores: "Luisa"
+- Herramientas: "Compresor", "Lentes de seguridad"
+- Duración: 120 minutos
+- El sistema busca automáticamente el próximo intervalo de tiempo disponible en los próximos 7 días
+
+### Ver Detalles por Recurso (2_Ver_detalles_por_recurso.py)
+1. Accede a esta página para ver la agenda completa de cada recurso
+2. Visualiza qué eventos están usando cada trabajador, herramienta o área
+3. Útil para planificar y evitar conflictos
+
+## Manejo de Errores
+
+La aplicación muestra mensajes de error claros cuando:
+- **Conflicto de horario**: "Un evento de [tipo] está usando el mismo espacio [área] a esa hora"
+- **Trabajador ocupado**: "[Trabajador] ya estará trabajando en evento de [tipo] a esa hora"
+- **Herramienta en uso**: "[Herramienta] ya se estará usando en evento de [tipo] a esa hora"
+- **Restricción violada**: "[Recurso A] no puede estar en un evento con [Recurso B]" o "[Recurso A] necesita estar con [Recurso B] en el evento"
+- **Horario fuera de rango**: "Hora de inicio o de fin fuera del horario de trabajo (de 8:00 am a 5:00 pm)"
+- **Sin trabajadores**: "Debe seleccionar al menos un trabajador"
+- **Horario inválido**: "La hora de fin debe ser posterior a la hora de inicio"
+- **Sin disponibilidad**: "No se pudo encontrar un horario adecuado dentro de los próximos 7 días"
 
 ## Estructura de Carpetas
 
@@ -112,6 +218,8 @@ event_data.json       - Almacenamiento de eventos (JSON)
 - Dependencias en `requirements.txt`
 
 ### Instalación
+
+**Instalar dependencias**
 ```bash
 pip install -r requirements.txt
 ```
@@ -121,7 +229,6 @@ pip install -r requirements.txt
 streamlit run main.py
 ```
 
-Se abre automáticamente en http://localhost:8501
 
 ### Estructura de un Evento (JSON)
 ```json
@@ -139,12 +246,19 @@ Se abre automáticamente en http://localhost:8501
 
 ## Archivos de Ejemplo
 
-`event_data.json` contiene eventos de ejemplo con diferentes tipos de trabajos, áreas, trabajadores y herramientas para demostrar el funcionamiento del sistema.
+`event_data.json` contiene eventos de ejemplo con diferentes tipos de trabajos, áreas, trabajadores y herramientas para demostrar el funcionamiento del sistema. 
 
 ## Notas Técnicas
 
-- Zona horaria: America/Havana
-- Intervalo de búsqueda automática: 5 minutos
-- Rango de búsqueda automática: 7 días desde ahora
-- Almacenamiento: JSON
-- Interfaz: Streamlit con componente de línea de tiempo (streamlit-vis-timeline)
+- **Zona horaria**: America/Havana
+- **Intervalo de búsqueda automática**: 5 minutos
+- **Rango de búsqueda automática**: 7 días desde ahora
+- **Almacenamiento**: JSON
+- **Interfaz**: Streamlit con componente de línea de tiempo (streamlit-vis-timeline)
+- **Lenguaje**: Python 3.10+
+- **Librerías principales**: 
+  - `streamlit`: Framework para la interfaz gráfica
+  - `streamlit-vis-timeline`: Componente de línea de tiempo
+  - `datetime`: Gestión de fechas y horas
+  - `json`: Persistencia de datos
+  - `uuid`: Generación de IDs únicos para eventos
