@@ -4,8 +4,18 @@ from google import genai
 from google.genai import types
 import os
 from dotenv import load_dotenv
+from uuid import uuid4
+from datetime import datetime
 
+from schedule_events.scheduling_helper import schedule_event_helper
 from gemini_scheduler.prompt import get_system_instruction 
+from utils.save_load_utils import to_object
+from schedule_events.validators import check_time_requirements, check_work_hours, check_workers_requirements, check_restrictions, check_time_conflicts
+from json_storage.save_load_data import load_data
+from utils.format_utils import create_possible_event
+from domain.resources_data import get_resources
+from utils.filter_utils import filter_resource_by_id
+from gemini_scheduler.ai_validators import validate_ai_response
 
 load_dotenv()
 
@@ -25,62 +35,50 @@ prompt = st.text_input("Describe el evento (ej: 'Reparación de transmisión con
 
 schema_config = {
     "type": "OBJECT",
-    "description": "Strict schema for extracting a car-repair shop scheduling event. Always include all keys.",
+    "description": "Schema for extracting car-repair shop scheduling event. ONLY extract information explicitly mentioned by the user. Leave fields empty if not mentioned.",
     "properties": {
         "spot": {
             "type": "STRING",
-            "description": "Work area ID where the job will be done. Must be one of: area_1, area_2, area_3, area_4.",
-            "enum": ["area_1", "area_2", "area_3", "area_4"]
+            "description": "Work area ID where the job will be done. ONLY set if user explicitly mentions a specific area/location. Leave empty string if not mentioned. Valid values: area_1, area_2, area_3, area_4"
         },
         "event_type": {
-            "type": "STRING",
-            "description": "Event type ID.",
-            "enum": [
-                "event_1", "event_2", "event_3", "event_4", "event_5",
-                "event_6", "event_7", "event_8", "event_9"
-            ]
+            "type": "STRING", 
+            "description": "Event type ID. ONLY set if user explicitly mentions a specific service/repair type. Leave empty string if not mentioned. Valid values: event_1, event_2, event_3, event_4, event_5, event_6, event_7, event_8, event_9"
         },
         "workers": {
             "type": "ARRAY",
-            "description": "List of worker IDs assigned to the job.",
+            "description": "List of worker names/IDs. ONLY include workers explicitly mentioned by name. Leave empty array if no workers mentioned.",
             "items": {
-                "type": "STRING",
-                "enum": [
-                    "worker_1", "worker_2", "worker_3",
-                    "worker_4", "worker_5", "worker_6"
-                ]
+                "type": "STRING"
             }
         },
         "resources": {
             "type": "ARRAY",
-            "description": "List of tool/equipment IDs needed.",
+            "description": "List of tools/equipment mentioned. ONLY include resources explicitly mentioned. Leave empty array if no resources mentioned.",
             "items": {
-                "type": "STRING",
-                "enum": [
-                    "tool_1", "tool_2", "tool_3", "tool_4",
-                    "tool_5", "tool_6", "tool_7"
-                ]
+                "type": "STRING"
             }
         },
         "start_time": {
             "type": "STRING",
-            "description": "Start timestamp in format YYYY-MM-DD HH:MM:SS, or empty string \"\" if not provided."
+            "description": "Start timestamp in format YYYY-MM-DD HH:MM:SS. ONLY set if user explicitly mentions a start time. Leave empty string if not mentioned."
         },
         "end_time": {
             "type": "STRING",
-            "description": "End timestamp in format YYYY-MM-DD HH:MM:SS, or empty string \"\" if not provided."
+            "description": "End timestamp in format YYYY-MM-DD HH:MM:SS. ONLY set if user explicitly mentions an end time. Leave empty string if not mentioned."
         },
         "duration": {
             "type": "STRING",
-            "description": "Duration in minutes as a string integer (e.g., \"60\"), or empty string \"\" if not provided."
+            "description": "Duration in minutes as string (e.g., '60'). ONLY set if user explicitly mentions duration. Leave empty string if not mentioned."
         },
         "color": {
             "type": "STRING",
-            "description": "Color identifier for the event (e.g., hex code or color name)."
+            "description": "Color identifier for the event. ONLY set if user explicitly mentions a color. Leave empty string if not mentioned."
         }
     },
-    "additionalProperties": False
+    "required": []
 }
+
 
 if st.button("Generar con IA") and prompt:
     with st.spinner("Procesando..."):
@@ -97,17 +95,39 @@ if st.button("Generar con IA") and prompt:
         try:
             event_data = json.loads(response.text)
             
-            st.success("Datos extraídos:")
+            st.success("Datos extraídos por IA:")
             st.json(event_data)
-            
+
+            validation_errors, use_auto_scheduler = validate_ai_response(event_data)
+
+            # Mostrar errores
+            if validation_errors:
+                pass # Explicar error con IA
+            else:
+                errors = schedule_event_helper(
+                    use_auto_scheduler=use_auto_scheduler,
+                    spot=event_data["spot"],
+                    event_type=event_data["event_type"],
+                    workers=event_data["workers"],
+                    resources=event_data["resources"],
+                    start_time=event_data["start_time"],
+                    end_time=event_data["end_time"],
+                    duration=event_data["duration"],
+                    color=event_data["color"],
+                )
+                if errors:
+                    st.error("Error al programar el evento:")
+                    for error in errors:
+                        st.write(f"- {error}")
+                else:
+                    st.success("Evento programado exitosamente")
         except json.JSONDecodeError:
             st.error("Error al interpretar la respuesta de la IA. Intenta ser más específico.")
             st.write(response.text)
 
 
-# TODOOOOOOOOOO
+# TODO
 # Agregar al req y readme
 # python-dotenv
 # google-genai
-# streamlit
 # .env file with GEMINI_API_KEY

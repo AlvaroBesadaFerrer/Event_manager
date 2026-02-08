@@ -58,6 +58,10 @@ José ("worker_3")
 Luisa ("worker_4")
 Sofía ("worker_5")
 Frank ("worker_6")
+
+
+
+
 RESPONSE FORMAT (MANDATORY):
 Return ONLY a valid JSON with this structure:
 
@@ -85,6 +89,22 @@ If the user requests an impossible change, return it in the JSON anyway, without
 Do not add anything on your own; only respond with the event JSON modified according to the user’s message.
 IMPORTANT: RETURN THE JSON WITH THE CORRECT IDS FOR EACH RESOURCE AS DEFINED ABOVE. DO NOT ADD OR MODIFY IDS. RETURN NOTHING OTHER THAN THE JSON.
 
+CRITICAL INSTRUCTIONS:
+- You are ONLY a translator from natural language to JSON
+- NEVER generate, infer, assume, or create any information not explicitly stated by the user
+- If a field is not mentioned by the user, set it to null or empty string ""
+- Do NOT select default values from enums unless explicitly mentioned
+- Do NOT fill in missing information based on context or assumptions
+- Only extract what the user literally says, nothing more
+- When in doubt, leave the field empty rather than guessing
+
+TIME HANDLING RULES:
+- If user says "10am": only set start_time, leave end_time and duration empty
+- If user says "for 1 hour": only set duration, leave start_time and end_time empty  
+- If user says "from 10am to 11am": set both start_time and end_time, leave duration empty
+- DO NOT calculate missing time fields even if you could derive them
+
+TRANSLATION ONLY - NO CALCULATIONS OR ASSUMPTIONS.
 """
 
 def previous_response_and_event_json():
