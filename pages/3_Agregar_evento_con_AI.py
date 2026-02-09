@@ -46,6 +46,7 @@ Describe el evento de forma natural y la IA lo procesará. Puedes hacer cambios 
 """)
 
 prompt = st.text_input("¿Qué evento necesitas agendar?")
+color_picker = st.color_picker("Elige un color para el evento")
 
 
 schema_config = {
@@ -86,10 +87,6 @@ schema_config = {
             "type": "STRING",
             "description": "Duration in minutes or empty string"
         },
-        "color": {
-            "type": "STRING",
-            "description": "Color for the event (hex code like #FF5733) or empty string"
-        }
     },
     "required": []
 }
@@ -172,7 +169,8 @@ if st.button("Procesar con IA"):
                 )
                 
                 new_event_data = json.loads(response.text)
-                
+                new_event_data["color"] = color_picker
+
                 # Fusionar con datos de evento existentes para preservar selecciones anteriores
                 if st.session_state['current_event']:
                     current_event = json.loads(st.session_state['event_json'])
@@ -186,6 +184,10 @@ if st.button("Procesar con IA"):
                 st.session_state['current_event'] = event_data
                 
                 st.success("✅ Datos procesados exitosamente")
+
+
+                # Validar el evento
+                event_data, validation_errors, use_auto_scheduler = validate_ai_response(event_data)
                 
                 # Mostrar resumen
                 display_event_summary(event_data)
@@ -193,9 +195,6 @@ if st.button("Procesar con IA"):
                 # Mostrar JSON completo para depuración
                 with st.expander("📋 Ver JSON completo"):
                     st.json(event_data)
-                
-                # Validar el evento
-                validation_errors, use_auto_scheduler = validate_ai_response(event_data)
                 
                 if validation_errors:
                     st.warning("⚠️ **Problemas encontrados:**")
@@ -288,10 +287,3 @@ if st.button("Procesar con IA"):
                     """)
                 else:
                     st.error(f"Error inesperado: {error_str}")
-
-# Show current working event if exists
-if st.session_state['current_event']:
-    st.divider()
-    st.subheader("📝 Evento en desarrollo")
-    st.info("Puedes hacer cambios al evento anterior con la IA")
-    display_event_summary(st.session_state['current_event'])

@@ -65,7 +65,7 @@ Frank ("worker_6")
 RESPONSE FORMAT (MANDATORY):
 Return ONLY a valid JSON with this structure:
 
-{{"spot": "event area id", "event_type": "event type id", "workers": [ "event worker ids" ], "resources": [ "event tool ids" ], "start_time": "YYYY-MM-DD HH:MM:SS or empty string", "end_time": "YYYY-MM-DD HH:MM:SS or empty string", "duration": "duration in minutes as integer or empty string", "color": "color to represent the event to the user" }}
+{{"spot": "event area id", "event_type": "event type id", "workers": [ "event worker ids" ], "resources": [ "event tool ids" ], "start_time": "YYYY-MM-DD HH:MM:SS or empty string", "end_time": "YYYY-MM-DD HH:MM:SS or empty string", "duration": "duration in minutes as integer or empty string"}}
 You must return a valid JSON object with the following keys. If a value is missing, use "" (a blank string). For start_time, end_time, and duration, if the user does not provide them, use an empty string ("").
 
 If the user does not mention a field, keep it the same as in the original event.

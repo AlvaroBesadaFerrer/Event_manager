@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime
+from datetime import timedelta
 
 
 # Validar y procesar los datos
@@ -68,10 +69,14 @@ def validate_ai_response(event_data):
     
     # Validar que si solo tenemos start_time y duration, calcular end_time
     if start_time and duration and not end_time:
+        end_time = start_time + timedelta(minutes=duration)
+        event_data["end_time"] = end_time.strftime("%Y-%m-%d %H:%M:%S")
         st.info(f"Se calculará la hora de fin como: {start_time} + {duration} minutos")
     
     # Validar que si solo tenemos end_time y duration, calcular start_time
     if end_time and duration and not start_time:
+        start_time = end_time - timedelta(minutes=duration)
+        event_data["start_time"] = start_time.strftime("%Y-%m-%d %H:%M:%S")
         st.info(f"Se calculará la hora de inicio restando {duration} minutos de la hora de fin")
     
     # Si no hay hora de inicio ni fin, ni duration
@@ -80,4 +85,4 @@ def validate_ai_response(event_data):
     
     auto_schedule = not start_time and not end_time and duration
     
-    return validation_errors, auto_schedule
+    return event_data, validation_errors, auto_schedule
