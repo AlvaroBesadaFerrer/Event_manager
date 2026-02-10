@@ -1,7 +1,7 @@
 from domain.event import Event
 from utils.filter_utils import filter_resource_by_id, filter_resources_list_by_id
 from domain.resources_data import get_resources
-from utils.time_utils import parse_datetime
+from utils.time_utils import datetime_to_str, str_to_datetime
 
 
 def resources_to_list(resources):
@@ -17,8 +17,8 @@ def parse_event_with_ids(event):
         "event_type": event.event_type.resource_id,
         "workers": resources_to_list(event.workers),
         "resources": resources_to_list(event.resources),
-        "start_time": event.start_time.strftime("%Y-%m-%d %H:%M:%S") if event.start_time else None,
-        "end_time": event.end_time.strftime("%Y-%m-%d %H:%M:%S") if event.end_time else None,
+        "start_time": datetime_to_str(event.start_time) if event.start_time else None,
+        "end_time": datetime_to_str(event.end_time) if event.end_time else None,
         "color": event.color,
     }
 
@@ -46,8 +46,8 @@ def to_object(data):
         return None
     
     try:
-        start_time = parse_datetime(data["start_time"]) if data.get("start_time") else None
-        end_time = parse_datetime(data["end_time"]) if data.get("end_time") else None
+        start_time = str_to_datetime(data["start_time"]) if data.get("start_time") else None
+        end_time = str_to_datetime(data["end_time"]) if data.get("end_time") else None
         
         return Event(
             id=data["id"],

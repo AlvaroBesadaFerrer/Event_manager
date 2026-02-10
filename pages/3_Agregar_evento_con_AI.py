@@ -5,15 +5,14 @@ from google.genai import types
 import os
 from dotenv import load_dotenv
 from datetime import datetime
-from uuid import uuid4
 
 from gemini_scheduler.prompt import get_system_instruction
 from gemini_scheduler.ai_validators import validate_ai_response
-from utils.save_load_utils import to_object
-from json_storage.save_load_data import load_data, save_data
-from schedule_events.validators import check_time_conflicts, check_restrictions
 from utils.filter_utils import filter_resource_by_id
 from domain.resources_data import get_resources
+from utils.time_utils import str_to_datetime
+from gemini_scheduler.ai_helpers import ai_json_dumps, explain_error_with_ai, update_session_state
+from schedule_events.scheduling_helper import schedule_event_helper
 
 load_dotenv()
 
@@ -116,6 +115,14 @@ def merge_event_data(new_data, current_data):
     return merged
 
 
+def event_successfully_created():
+    st.success("✅ **Evento creado exitosamente!**")
+    # Limpiar el estado de sesión después de crear el evento
+    st.session_state['current_event'] = None
+    st.session_state['event_json'] = '{}'
+    st.session_state['previous_response'] = ''
+
+
 def display_event_summary(event_data):
     """Mostrar un resumen formateado del evento"""
     st.info("📋 **Resumen del evento:**")
@@ -170,7 +177,6 @@ if st.button("Procesar con IA"):
                 
                 new_event_data = json.loads(response.text)
                 new_event_data["color"] = color_picker
-
                 # Fusionar con datos de evento existentes para preservar selecciones anteriores
                 if st.session_state['current_event']:
                     current_event = json.loads(st.session_state['event_json'])
@@ -178,99 +184,50 @@ if st.button("Procesar con IA"):
                 else:
                     event_data = new_event_data
                 
-                # Actualizar estado de sesión para persistir entre interacciones
-                st.session_state['previous_response'] = response.text
-                st.session_state['event_json'] = json.dumps(event_data, ensure_ascii=False)
-                st.session_state['current_event'] = event_data
-                
-                st.success("✅ Datos procesados exitosamente")
-
-
                 # Validar el evento
                 event_data, validation_errors, use_auto_scheduler = validate_ai_response(event_data)
+                
+                # Actualizar estado de sesión para persistir entre interacciones
+                update_session_state(
+                    response=response.text,
+                    event_json=ai_json_dumps(event_data),
+                    current_event=event_data
+                )
+                
+                st.success("✅ Datos procesados exitosamente")
                 
                 # Mostrar resumen
                 display_event_summary(event_data)
                 
-                # Mostrar JSON completo para depuración
+                # Mostrar JSON completo del evento que se va a tratar de crear
                 with st.expander("📋 Ver JSON completo"):
                     st.json(event_data)
                 
                 if validation_errors:
-                    st.warning("⚠️ **Problemas encontrados:**")
-                    for error in validation_errors:
-                        st.write(f"• {error}")
-                    
-                    # Pedir a la IA que explique y sugiera correcciones
-                    st.info("Pidiendo ayuda a la IA para corregir los errores...")
-                    
-                    try:
-                        explanation_prompt = (
-                            "Eres un asistente que ayuda a corregir errores en la creación de eventos para un taller de autos. "
-                            "Responde en español, de forma clara y breve. "
-                            "Explica: 1) Qué está mal o qué falta, 2) Cómo corregirlo, 3) Un ejemplo con valores válidos.\n\n"
-                            f"Entrada del usuario: {prompt}\n\n"
-                            f"JSON del evento: {json.dumps(event_data, ensure_ascii=False, indent=2)}\n\n"
-                            f"Errores: {', '.join(validation_errors)}"
-                        )
-                        
-                        ai_explanation = client.models.generate_content(
-                            model="gemini-3-flash-preview",
-                            contents=explanation_prompt
-                        )
-                        st.markdown(ai_explanation.text)
-                    except Exception as e:
-                        st.error(f"Error al obtener explicación: {str(e)}")
+                    explain_error_with_ai(validation_errors, prompt, event_data, client)
                 else:
                     st.success("✅ **Evento validado correctamente**")
-                    
                     # Intentar crear el evento
                     st.info("Creando evento en el sistema...")
                     
-                    try:
-                        # Agregar ID si no está presente
-                        if "id" not in event_data or not event_data["id"]:
-                            event_data["id"] = str(uuid4())
+                    try:                        
+                        # Llamar a schedule_event_helper con los parámetros correctos
+                        errors = schedule_event_helper(
+                            use_auto_scheduler=use_auto_scheduler,
+                            spot=event_data.get("spot"),
+                            event_type=event_data.get("event_type"),
+                            workers=event_data.get("workers", []),
+                            resources=event_data.get("resources", []),
+                            color=event_data.get("color"),
+                            start_time=event_data.get("start_time"),
+                            end_time=event_data.get("end_time"),
+                            duration=event_data.get("duration"),
+                        )
                         
-                        # Convertir a objeto Event (maneja cálculos de tiempo)
-                        event = to_object(event_data)
-                        
-                        if not event:
-                            st.error("Error: No se pudo convertir los datos a un evento válido")
+                        if errors:
+                            explain_error_with_ai(errors, prompt, event_data, client)
                         else:
-                            # Verificar conflictos
-                            existing_events = load_data()
-                            conflicts = check_time_conflicts(event, existing_events)
-                            
-                            if conflicts:
-                                st.error("❌ **Conflictos detectados:**")
-                                for conflict in conflicts:
-                                    st.write(f"• {conflict}")
-                                st.info("Sugiero cambiar la hora o los recursos para evitar conflictos")
-                            else:
-                                # Verificar restricciones
-                                restriction_errors = check_restrictions(event)
-                                
-                                if restriction_errors:
-                                    st.error("❌ **Restricciones violadas:**")
-                                    for error in restriction_errors:
-                                        st.write(f"• {error}")
-                                else:
-                                    # Guardar el evento
-                                    existing_events.append(event)
-                                    save_data(existing_events)
-                                    
-                                    st.success("🎉 **¡Evento creado exitosamente!**")
-                                    st.balloons()
-                                    
-                                    # Mostrar detalles del evento guardado
-                                    st.info("**Detalles del evento guardado:**")
-                                    display_event_summary(event_data)
-                                    
-                                    # Reiniciar estado de sesión para nuevo evento
-                                    st.session_state['current_event'] = None
-                                    st.session_state['previous_response'] = ''
-                                    st.session_state['event_json'] = '{}'
+                            event_successfully_created()
                     
                     except Exception as e:
                         st.error(f"Error al crear el evento: {str(e)}")
@@ -282,8 +239,6 @@ if st.button("Procesar con IA"):
                 # Check for 403 Forbidden error (geolocation/VPN issue)
                 if "403" in error_str or "Forbidden" in error_str:
                     st.error("❌ **Tienes que usar un VPN**")
-                    st.info("""
-                    La API de Gemini no está disponible en tu región. Usa una VPN.
-                    """)
+                    st.info("La API de Gemini no está disponible en tu región. Usa una VPN.")
                 else:
                     st.error(f"Error inesperado: {error_str}")

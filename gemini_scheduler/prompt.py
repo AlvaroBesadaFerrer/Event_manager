@@ -1,6 +1,8 @@
 import streamlit as st
 from datetime import datetime
 
+from utils.time_utils import datetime_to_str
+
 
 ADDITIONAL_PROMPT_1 = """
 You are an event planning assistant for an auto repair shop.
@@ -125,7 +127,7 @@ def get_system_instruction() -> str:
     full_prompt = ADDITIONAL_PROMPT_1.format(
         previous_response=previous_response,
         event_json=event_json,
-        date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        date=datetime_to_str(datetime.now())
     )
 
     return full_prompt

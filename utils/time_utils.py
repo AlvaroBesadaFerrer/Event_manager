@@ -2,9 +2,13 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 
-def parse_datetime(time_str):
+def str_to_datetime(time_str):
     """Convierte de una string de tiempo en un objeto datetime"""
     return datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S").replace(tzinfo=ZoneInfo("America/Havana"))
+
+def datetime_to_str(datetime_obj):
+    """Convierte de un objeto datetime en una string de tiempo"""
+    return datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
 
 def parse_start_end_date_time(date, start_time, end_time):
     """Convierte una fecha y horas de inicio y fin en objetos datetime"""
