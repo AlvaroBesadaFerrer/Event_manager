@@ -38,6 +38,8 @@ def explain_error_with_ai(validation_errors, prompt, event_data, client):
 
 def ai_json_dumps(event_data):
     e = event_data
-    e["start_time"] = datetime_to_str(e["start_time"])
-    e["end_time"] = datetime_to_str(e["end_time"])
+    if e["start_time"]:
+        e["start_time"] = datetime_to_str(e["start_time"])
+    if e["end_time"]:
+        e["end_time"] = datetime_to_str(e["end_time"])
     return json.dumps(e, ensure_ascii=False)

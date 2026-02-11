@@ -149,5 +149,20 @@
         "start_time": "2026-02-09 10:00:00",
         "end_time": "2026-02-09 12:00:00",
         "color": "#FFFFFF"
+    },
+    {
+        "id": "f34be90a-5223-4077-b8cf-d9d4f8affb98",
+        "spot": "area_3",
+        "event_type": "event_3",
+        "workers": [
+            "worker_1",
+            "worker_2"
+        ],
+        "resources": [
+            "tool_2"
+        ],
+        "start_time": "2026-02-11 13:02:16",
+        "end_time": "2026-02-11 15:02:16",
+        "color": "#000000"
     }
 ]

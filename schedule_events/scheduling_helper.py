@@ -29,7 +29,6 @@ def schedule_event_helper(
             resources=resources,
             color=color,
         )
-        
         errors.extend(check_restrictions(possible_event))
         
         if not errors:

@@ -3,6 +3,8 @@ import json
 from google import genai
 from google.genai import types
 import os
+from domain.event import Event
+from domain.resource import Resource
 from dotenv import load_dotenv
 from datetime import datetime
 
@@ -10,6 +12,7 @@ from gemini_scheduler.prompt import get_system_instruction
 from gemini_scheduler.ai_validators import validate_ai_response
 from utils.filter_utils import filter_resource_by_id
 from domain.resources_data import get_resources
+from utils.save_load_utils import to_object
 from utils.time_utils import str_to_datetime
 from gemini_scheduler.ai_helpers import ai_json_dumps, explain_error_with_ai, update_session_state
 from schedule_events.scheduling_helper import schedule_event_helper
@@ -212,23 +215,25 @@ if st.button("Procesar con IA"):
                     
                     try:                        
                         # Llamar a schedule_event_helper con los parámetros correctos
+                        event_data_object = to_object(event_data)
+                        
                         errors = schedule_event_helper(
                             use_auto_scheduler=use_auto_scheduler,
-                            spot=event_data.get("spot"),
-                            event_type=event_data.get("event_type"),
-                            workers=event_data.get("workers", []),
-                            resources=event_data.get("resources", []),
-                            color=event_data.get("color"),
-                            start_time=event_data.get("start_time"),
-                            end_time=event_data.get("end_time"),
-                            duration=event_data.get("duration"),
+                            spot=event_data_object.spot if event_data_object and event_data_object.spot else None,
+                            event_type=event_data_object.event_type if event_data_object else None,
+                            workers=event_data_object.workers if event_data_object else [],
+                            resources=event_data_object.resources if event_data_object else [],
+                            color=event_data_object.color if event_data_object else None,
+                            start_time=event_data_object.start_time if event_data_object else None,
+                            end_time=event_data_object.end_time if event_data_object else None,
+                            duration=event_data.get("duration", 0),
                         )
                         
                         if errors:
                             explain_error_with_ai(errors, prompt, event_data, client)
                         else:
                             event_successfully_created()
-                    
+                        
                     except Exception as e:
                         st.error(f"Error al crear el evento: {str(e)}")
             

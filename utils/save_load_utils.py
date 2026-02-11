@@ -1,3 +1,4 @@
+from uuid import uuid4
 from domain.event import Event
 from utils.filter_utils import filter_resource_by_id, filter_resources_list_by_id
 from domain.resources_data import get_resources
@@ -50,7 +51,7 @@ def to_object(data):
         end_time = str_to_datetime(data["end_time"]) if data.get("end_time") else None
         
         return Event(
-            id=data["id"],
+            id=data.get("id", str(uuid4())),
             spot=spot,
             event_type=event_type,
             workers=filter_resources_list_by_id(get_resources(), data["workers"]),

@@ -9,7 +9,6 @@ def validate_ai_response(event_data: Dict[str, Any]) -> Tuple[Dict[str, Any], Li
     """Valida completamente la respuesta de IA y calcula tiempos faltantes"""
     validation_errors: List[str] = []
     auto_schedule = False
-    print("dekkkkkkkkkkkk")
     # Paso 1: Convertir strings vacíos a None
     empty_string_to_None(event_data)
     
