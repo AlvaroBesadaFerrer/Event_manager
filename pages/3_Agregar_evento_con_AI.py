@@ -2,22 +2,19 @@ import streamlit as st
 import json
 from google import genai
 from google.genai import types
+from google.genai.errors import APIError, ClientError, ServerError
 import os
-from domain.event import Event
-from domain.resource import Resource
 from dotenv import load_dotenv
-from datetime import datetime
 
 from gemini_scheduler.prompt import get_system_instruction
 from gemini_scheduler.ai_validators import validate_ai_response
 from utils.filter_utils import filter_resource_by_id
 from domain.resources_data import get_resources
 from utils.save_load_utils import to_object
-from utils.time_utils import str_to_datetime
 from gemini_scheduler.ai_helpers import ai_json_dumps, explain_error_with_ai, update_session_state
 from schedule_events.scheduling_helper import schedule_event_helper
 
-load_dotenv()
+load_dotenv(override=True)
 
 if "GEMINI_API_KEY" not in os.environ:
     st.error("GEMINI_API_KEY not found in environment")
@@ -212,38 +209,35 @@ if st.button("Procesar con IA"):
                     st.success("✅ **Evento validado correctamente**")
                     # Intentar crear el evento
                     st.info("Creando evento en el sistema...")
+                    # Llamar a schedule_event_helper con los parámetros correctos
+                    event_data_object = to_object(event_data)
                     
-                    try:                        
-                        # Llamar a schedule_event_helper con los parámetros correctos
-                        event_data_object = to_object(event_data)
+                    errors = schedule_event_helper(
+                        use_auto_scheduler=use_auto_scheduler,
+                        spot=event_data_object.spot if event_data_object and event_data_object.spot else None,
+                        event_type=event_data_object.event_type if event_data_object else None,
+                        workers=event_data_object.workers if event_data_object else [],
+                        resources=event_data_object.resources if event_data_object else [],
+                        color=event_data_object.color if event_data_object else None,
+                        date=event_data_object.start_time.date() if event_data_object and event_data_object.start_time else None,
+                        start_time=event_data_object.start_time.time() if event_data_object and event_data_object.start_time else None,
+                        end_time=event_data_object.end_time.time() if event_data_object and event_data_object.end_time else None,
+                        duration=event_data.get("duration", 0),
+                    )
+                    
+                    if errors:
+                        explain_error_with_ai(errors, prompt, event_data, client)
+                    else:
+                        event_successfully_created()
                         
-                        errors = schedule_event_helper(
-                            use_auto_scheduler=use_auto_scheduler,
-                            spot=event_data_object.spot if event_data_object and event_data_object.spot else None,
-                            event_type=event_data_object.event_type if event_data_object else None,
-                            workers=event_data_object.workers if event_data_object else [],
-                            resources=event_data_object.resources if event_data_object else [],
-                            color=event_data_object.color if event_data_object else None,
-                            start_time=event_data_object.start_time if event_data_object else None,
-                            end_time=event_data_object.end_time if event_data_object else None,
-                            duration=event_data.get("duration", 0),
-                        )
-                        
-                        if errors:
-                            explain_error_with_ai(errors, prompt, event_data, client)
-                        else:
-                            event_successfully_created()
-                        
-                    except Exception as e:
-                        st.error(f"Error al crear el evento: {str(e)}")
             
             except json.JSONDecodeError as e:
                 st.error(f"Error al procesar respuesta de IA: {str(e)}")
-            except Exception as e:
+            except (APIError, ClientError, ServerError) as e:
                 error_str = str(e)
                 # Check for 403 Forbidden error (geolocation/VPN issue)
                 if "403" in error_str or "Forbidden" in error_str:
                     st.error("❌ **Tienes que usar un VPN**")
                     st.info("La API de Gemini no está disponible en tu región. Usa una VPN.")
                 else:
-                    st.error(f"Error inesperado: {error_str}")
+                    st.error(f"Error de la API Gemini: {error_str}")

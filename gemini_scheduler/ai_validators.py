@@ -49,7 +49,7 @@ def validate_ai_response(event_data: Dict[str, Any]) -> Tuple[Dict[str, Any], Li
         event_data["duration"] = 0
     
     # Paso 9: Determinar si puede auto-agendar (solo si no hay errores)
-    auto_schedule = check_auto_schedule(validation_errors)
+    auto_schedule = check_auto_schedule(duration=duration, start_time=start_time, end_time=end_time)
     
     return event_data, validation_errors, auto_schedule
 
@@ -219,7 +219,7 @@ def validate_empty_time_and_duration(
     return validation_errors
 
 
-def check_auto_schedule(validation_errors: List[str]) -> bool:
+def check_auto_schedule(duration: Optional[int], start_time: Optional[datetime], end_time: Optional[datetime]) -> bool:
     """Determina si el evento puede auto-agendarse."""
 
-    return len(validation_errors) == 0
+    return duration and not start_time and not end_time
