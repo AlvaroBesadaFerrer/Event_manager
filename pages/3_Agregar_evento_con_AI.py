@@ -239,11 +239,18 @@ if st.button("Procesar con IA"):
                 st.error(f"Error al procesar respuesta de IA: {str(e)}")
             except (APIError, ClientError, ServerError) as e:
                 error_str = str(e)
-                # Check for 403 Forbidden error (geolocation/VPN issue)
                 if "403" in error_str or "Forbidden" in error_str:
                     st.error("❌ **Tienes que usar un VPN**")
                     st.info("La API de Gemini no está disponible en tu región. Usa una VPN.")
                 elif "429" in error_str or "rate" in error_str.lower():
                     st.error("⏱️ **Límite de solicitudes de Gemini excedido**. Intente más tarde o mañana.")
+                elif "503" in error_str or "service" in error_str.lower():
+                    st.error("🔌 **Servicio de Gemini no disponible**. Intenta más tarde.")
+                elif "timeout" in error_str.lower() or "deadline" in error_str.lower():
+                    st.error("⏳ **Tiempo de espera agotado**. La solicitud tardó demasiado. Intenta nuevamente.")
+                elif "401" in error_str or "unauthorized" in error_str.lower():
+                    st.error("🔑 **Clave API inválida o expirada**. Verifica tu GEMINI_API_KEY en el archivo .env")
                 else:
                     st.error(f"Error de la API Gemini: {error_str}")
+            except Exception as e:
+                st.error(f"Error inesperado: {str(e)}")

@@ -19,23 +19,20 @@ def explain_error_with_ai(validation_errors, prompt, event_data, client):
     # Pedir a la IA que explique y sugiera correcciones
     st.info("Pidiendo ayuda a la IA para corregir los errores...")
     
-    try:
-        explanation_prompt = (
-            "Eres un asistente que ayuda a corregir errores en la creación de eventos para un taller de autos. "
-            "Responde en español, de forma clara y breve. "
-            "Explica: 1) Qué está mal o qué falta, 2) Cómo corregirlo, 3) Un ejemplo con valores válidos.\n\n"
-            f"Entrada del usuario: {prompt}\n\n"
-            f"JSON del evento: {json.dumps(event_data, ensure_ascii=False, indent=2)}\n\n"
-            f"Errores: {', '.join(validation_errors)}"
-        )
-        
-        ai_explanation = client.models.generate_content(
-            model="gemini-3-flash-preview",
-            contents=explanation_prompt
-        )
-        st.markdown(ai_explanation.text)
-    except Exception as e:
-        st.error(f"Error al obtener explicación: {str(e)}")
+    explanation_prompt = (
+        "Eres un asistente que ayuda a corregir errores en la creación de eventos para un taller de autos. "
+        "Responde en español, de forma clara y breve. "
+        "Explica: 1) Qué está mal o qué falta, 2) Cómo corregirlo, 3) Un ejemplo con valores válidos.\n\n"
+        f"Entrada del usuario: {prompt}\n\n"
+        f"JSON del evento: {json.dumps(event_data, ensure_ascii=False, indent=2)}\n\n"
+        f"Errores: {', '.join(validation_errors)}"
+    )
+    
+    ai_explanation = client.models.generate_content(
+        model="gemini-3-flash-preview",
+        contents=explanation_prompt
+    )
+    st.markdown(ai_explanation.text)
     
 
 def ai_json_dumps(event_data):
