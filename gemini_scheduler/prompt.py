@@ -120,7 +120,6 @@ def previous_response_and_event_json():
 
 
 def get_system_instruction() -> str:
-    st.write(st.session_state)
 
     previous_response, event_json = previous_response_and_event_json()
 

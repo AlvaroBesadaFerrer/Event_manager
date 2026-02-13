@@ -1,2 +1,4 @@
+dotenv==0.9.9
+google-genai==1.63.0
 streamlit==1.53.1
 streamlit-vis-timeline==0.3.0

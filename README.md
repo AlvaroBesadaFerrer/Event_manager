@@ -161,6 +161,69 @@ Todas las restricciones posibles se pueden configurar entre áreas de trabajo, t
 - Duración: 120 minutos
 - El sistema busca automáticamente el próximo intervalo de tiempo disponible en los próximos 7 días
 
+### Agregar Evento con IA (3_Agregar_evento_con_AI.py)
+
+Crea eventos usando lenguaje natural. La IA Gemini extrae automáticamente los detalles del evento desde tu descripción y permite hacer cambios iterativos.
+
+**Flujo de uso:**
+
+1. **Descripción inicial**: Escribe una descripción en lenguaje natural
+   - Ejemplo: "Reparación de motor con Juan mañana a las 10 am por 2 horas en el Espacio con Rampa"
+
+2. **Procesamiento**: Gemini extrae automáticamente:
+   - Área de trabajo
+   - Tipo de evento
+   - Trabajadores asignados
+   - Herramientas necesarias
+   - Horario (inicio, fin, duración)
+
+3. **Cambios iterativos**: Refina el evento escribiendo nuevas descripciones sin repetir todo:
+   - "Agrega a Pedro también"
+   - "Cambia la hora a las 2 pm"
+   - "Quita el compresor"
+   
+   La IA mantiene los datos previos y aplica solo los cambios mencionados.
+
+4. **Programación automática**: Si solo especificas duración (sin horario), el sistema usa el planificador automático que creamos anteriormente que:
+   - Busca el próximo intervalo disponible en los próximos 7 días
+   - Verifica cada 5 minutos disponibilidad de recursos
+   - Asigna automáticamente el evento sin requerir hora específica
+   - Ejemplo: "Reparación de motor con Juan por 2 horas" → Sistema busca el próximo slot de 2 horas libre
+
+5. **Validación**: El sistema valida automáticamente:
+   - Existencia de recursos (ID válidos en el dominio)
+   - Coherencia de horarios
+   - Conflictos de tiempo con otros eventos
+   - Cumplimiento de restricciones configuradas
+
+6. **Creación**: Si todo es válido, se agrega el evento al calendario. Si hay errores, Gemini explica qué está mal y sugiere correcciones.
+
+**Interfaz:**
+- Campo de entrada: "¿Qué evento necesitas agendar?"
+- Selector de color para personalizar el evento
+- Botón: "Procesar con IA"
+
+**Resultado en pantalla:**
+- Resumen visual del evento (área, tipo, trabajadores, duración, color)
+- JSON completo del evento en expander desplegable
+- Mensajes de error con explicación de IA si hay problemas
+- Opción de continuar editando o crear nuevo evento
+
+**Ejemplo en acción:**
+```
+Usuario: "Reparación eléctrica con Juan en Rampa mañana a las 3 pm por 1 hora"
+
+Resultado: ✓ Área: Espacio con rampa
+          ✓ Tipo: Reparaciones eléctricas
+          ✓ Trabajadores: Juan
+          ✓ Inicio: 2026-02-14 15:00:00
+          ✓ Duración: 60 minutos
+
+Usuario: "Agrega a José también"
+
+Resultado: (Mantiene todo igual, agrega José a trabajadores)
+```
+
 ### Ver Detalles por Recurso (2_Ver_detalles_por_recurso.py)
 1. Accede a esta página para ver la agenda completa de cada recurso
 2. Visualiza qué eventos están usando cada trabajador, herramienta o área
@@ -193,9 +256,15 @@ schedule_events/
   schedule.py           - Funciones add_event, auto_schedule_event, validate_event
   validators.py         - Validadores: check_time_conflicts, check_restrictions, check_work_hours, etc.
 
+gemini_scheduler/
+  prompt.py             - Instrucción del sistema para Gemini con contexto de eventos previos
+  ai_validators.py      - Validación de respuestas de Gemini y cálculo de tiempos
+  ai_helpers.py         - Funciones auxiliares: manejo de JSON, explicación de errores, actualización de estado
+
 pages/
-  1_Agregar_evento.py   - Interfaz Streamlit para agregar eventos
+  1_Agregar_evento.py   - Interfaz Streamlit para agregar eventos manualmente
   2_Ver_detalles_por_recurso.py - Interfaz para listar recursos y su agenda
+  3_Agregar_evento_con_AI.py - Interfaz Streamlit para agregar eventos con Gemini
 
 json_storage/
   save_load_data.py     - Funciones load_data(), save_data() para cargar y guardar los datos de los eventos
@@ -255,10 +324,13 @@ streamlit run main.py
 - **Rango de búsqueda automática**: 7 días desde ahora
 - **Almacenamiento**: JSON
 - **Interfaz**: Streamlit con componente de línea de tiempo (streamlit-vis-timeline)
+- **IA**: Google Gemini con respuestas estructuradas en JSON
 - **Lenguaje**: Python 3.10+
 - **Librerías principales**: 
   - `streamlit`: Framework para la interfaz gráfica
   - `streamlit-vis-timeline`: Componente de línea de tiempo
+  - `google-genai`: SDK de Google Gemini para procesamiento de lenguaje natural
   - `datetime`: Gestión de fechas y horas
-  - `json`: Persistencia de datos
+  - `json`: Persistencia de datos y manejo de respuestas de IA
   - `uuid`: Generación de IDs únicos para eventos
+  - `python-dotenv`: Carga de variables de entorno (GEMINI_API_KEY)
