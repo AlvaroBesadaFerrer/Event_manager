@@ -117,6 +117,7 @@ def merge_event_data(new_data, current_data):
 
 def event_successfully_created():
     st.success("✅ **Evento creado exitosamente!**")
+    st.balloons()
     # Limpiar el estado de sesión después de crear el evento
     st.session_state['current_event'] = None
     st.session_state['event_json'] = '{}'
@@ -239,5 +240,7 @@ if st.button("Procesar con IA"):
                 if "403" in error_str or "Forbidden" in error_str:
                     st.error("❌ **Tienes que usar un VPN**")
                     st.info("La API de Gemini no está disponible en tu región. Usa una VPN.")
+                elif "429" in error_str or "rate" in error_str.lower():
+                    st.error("⏱️ **Límite de solicitudes de Gemini excedido**. Intente más tarde o mañana.")
                 else:
                     st.error(f"Error de la API Gemini: {error_str}")
