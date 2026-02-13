@@ -6,4 +6,6 @@ st.set_page_config(page_title="Ver detalles de recursos", page_icon=":hammer_and
 
 st.markdown("# Detalles de recursos :red_car:")
 
-st.dataframe(show_resources_details())  # Muestra los detalles de los recursos en un DataFrame de Streamlit
+st.markdown("Visualiza la agenda completa de cada recurso (trabajadores, áreas, herramientas y tipos de evento).")
+
+st.dataframe(show_resources_details())

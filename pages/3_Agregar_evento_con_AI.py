@@ -6,6 +6,8 @@ from google.genai.errors import APIError, ClientError, ServerError
 import os
 from dotenv import load_dotenv
 
+load_dotenv()
+
 from gemini_scheduler.prompt import get_system_instruction
 from gemini_scheduler.ai_validators import validate_ai_response
 from utils.filter_utils import filter_resource_by_id
@@ -14,16 +16,17 @@ from utils.save_load_utils import to_object
 from gemini_scheduler.ai_helpers import ai_json_dumps, explain_error_with_ai, update_session_state
 from schedule_events.scheduling_helper import schedule_event_helper
 
-load_dotenv(override=True)
 
 if "GEMINI_API_KEY" not in os.environ:
-    st.error("GEMINI_API_KEY not found in environment")
+    st.error("Tiene que definir GEMINI_API_KEY, en el README puede encontrar las instrucciones para hacerlo")
     st.stop()
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
 st.set_page_config(page_title="Agregar evento con IA", page_icon=":robot_face:")
 st.title("Agregar evento con IA")
+
+st.markdown("Describe el evento en lenguaje natural. La IA extrae automáticamente los detalles y permite cambios iterativos. Si solo especificas duración, usa el planificador automático. Si proporcionas hora de inicio y duración, calcula automáticamente la hora de fin (y lo mismo para hora de fin y duración).")
 
 # Inicializar estado de sesión para persistencia de eventos
 if 'current_event' not in st.session_state:
@@ -38,7 +41,7 @@ if 'event_json' not in st.session_state:
 system_instruction = get_system_instruction()
 
 st.markdown("""
-Describe el evento de forma natural y la IA lo procesará. Puedes hacer cambios iterativos:
+Puedes hacer cambios iterativos:
 - "Reparación de motor con Juan mañana a las 10 am por 2 horas en el Espacio con Rampa"
 - "Agrega María también"
 - "Cambia la hora a las 2 pm"

@@ -8,6 +8,9 @@ from schedule_events.scheduling_helper import schedule_event_helper
 st.set_page_config(page_title="Agregar evento", page_icon=":hammer_and_wrench:")
 
 st.markdown("# Agregar evento :red_car:")
+
+st.markdown("**Modo manual:** Especifica fecha y horario exacto. **Planificador automático:** Solo indica duración y el sistema busca el próximo horario disponible.")
+
 st.subheader("Detalles del evento")
 
 

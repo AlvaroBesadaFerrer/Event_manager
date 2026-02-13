@@ -21,7 +21,7 @@ Existen 4 tipos de recursos:
 
 1. **Tipo de evento** (9 tipos): Reparaciones eléctricas, Soldadura en la carrocería, Arreglo de mecánica, Aspirar interior, Pintar exterior, Cambio de aceite, Arreglar dirección, Revisar transmisión, Soldadura en tubo de escape.
 
-2. **Áreas de trabajo** (4 áreas): Espacio con rampa, Espacio para pintura, Espacio de trabajo 1, Espacio de trabajo 2.
+2. **Áreas de trabajo** (4 áreas): Espacio con rampa, Espacio para pintura, Espacio de trabajo A, Espacio de trabajo B.
 
 3. **Trabajadores** (6 personas): Juan, Pedro, José, Luisa, Sofía, Frank.
 
@@ -285,6 +285,31 @@ event_data.json       - Almacenamiento de eventos (JSON)
 ### Requisitos
 - Python 3.10+
 - Dependencias en `requirements.txt`
+- Clave API de Google Gemini (para usar la funcionalidad de agregar eventos con IA)
+
+### Obtener Clave API de Gemini
+
+Para usar la funcionalidad "Agregar Evento con IA", necesitas una clave API de Google Gemini:
+
+1. Ve a [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Haz clic en "Create API Key"
+3. Selecciona "Create new secret key in new project"
+4. Copia la clave API generada
+
+### Configurar Variables de Entorno
+
+1. **Crear archivo `.env`** en la raíz del proyecto:
+   ```bash
+   touch .env
+   ```
+
+2. **Agregar la clave API** al archivo `.env`:
+   ```
+   GEMINI_API_KEY=tu_clave_api_aqui
+   ```
+
+
+**Nota:** La aplicación cargará la clave automáticamente al iniciar. Si la clave no está configurada, la página "Agregar evento con IA" mostrará un error.
 
 ### Instalación
 

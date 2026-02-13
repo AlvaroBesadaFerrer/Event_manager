@@ -4,11 +4,13 @@ import json
 from utils.time_utils import datetime_to_str
 
 def update_session_state(response, event_json, current_event):
+    """Persiste datos del evento y respuesta de la IA en el estado de sesión para edición iterativa."""
     st.session_state['current_event'] = current_event
     st.session_state['previous_response'] = response
     st.session_state['event_json'] = event_json
 
 def explain_error_with_ai(validation_errors, prompt, event_data, client):
+    """Muestra errores de validación y pide a la IA sugerencias para corregirlos."""
     st.warning("⚠️ **Problemas encontrados:**")
 
     for error in validation_errors:
@@ -37,6 +39,7 @@ def explain_error_with_ai(validation_errors, prompt, event_data, client):
     
 
 def ai_json_dumps(event_data):
+    """Convierte datos del evento a JSON con campos datetime formateados."""
     e = event_data
     if e["start_time"]:
         e["start_time"] = datetime_to_str(e["start_time"])

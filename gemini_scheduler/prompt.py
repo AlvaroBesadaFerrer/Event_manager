@@ -41,8 +41,8 @@ Areas:
 
 Ramp area ("area_1")
 Painting area ("area_2")
-Work area 1 ("area_3")
-Work area 2 ("area_4")
+Work area A ("area_3")
+Work area B ("area_4")
 Tools:
 
 Compressor ("tool_1")
@@ -110,6 +110,7 @@ TRANSLATION ONLY - NO CALCULATIONS OR ASSUMPTIONS.
 """
 
 def previous_response_and_event_json():
+    """Obtiene respuesta previa de la IA y JSON del evento actual del estado de sesión."""
     if 'previous_response' not in st.session_state:
         st.session_state['previous_response'] = ''
 
@@ -120,6 +121,7 @@ def previous_response_and_event_json():
 
 
 def get_system_instruction() -> str:
+    """Genera la instrucción del sistema para Gemini con contexto de interacciones previas."""
 
     previous_response, event_json = previous_response_and_event_json()
 

@@ -7,6 +7,7 @@ from utils.format_utils import show_details
 
 
 st.markdown("# Eventos :blue_car:")
+st.markdown("Visualiza todos los eventos programados. Selecciona uno para ver detalles o eliminarlo. También puedes desplazarte en la línea del tiempo")
 
 events = load_data()
 
