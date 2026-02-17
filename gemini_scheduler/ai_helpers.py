@@ -2,6 +2,7 @@ import streamlit as st
 import json
 
 from utils.time_utils import datetime_to_str
+from gemini_scheduler.prompt import AVAILABLE_RESOURCES
 
 def update_session_state(response, event_json, current_event):
     """Persiste datos del evento y respuesta de la IA en el estado de sesión para edición iterativa."""
@@ -23,9 +24,11 @@ def explain_error_with_ai(validation_errors, prompt, event_data, client):
         "Eres un asistente que ayuda a corregir errores en la creación de eventos para un taller de autos. "
         "Responde en español, de forma clara y breve. "
         "Explica: 1) Qué está mal o qué falta, 2) Cómo corregirlo, 3) Un ejemplo con valores válidos.\n\n"
+        f"{AVAILABLE_RESOURCES}\n\n"
         f"Entrada del usuario: {prompt}\n\n"
         f"JSON del evento: {json.dumps(event_data, ensure_ascii=False, indent=2)}\n\n"
-        f"Errores: {', '.join(validation_errors)}"
+        f"Errores: {', '.join(validation_errors)}\n\n"
+        "IMPORTANTE: Solo usa recursos que existen en la lista anterior. No inventes areas, trabajadores, tipos de evento o herramientas."
     )
     
     ai_explanation = client.models.generate_content(

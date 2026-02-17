@@ -42,9 +42,6 @@ def to_object(data):
 
     spot = filter_resource_by_id(get_resources(), data["spot"])
     event_type = filter_resource_by_id(get_resources(), data["event_type"])
-
-    if spot is None or event_type is None:
-        return None
     
     try:
         start_time = str_to_datetime(data["start_time"]) if data.get("start_time") else None

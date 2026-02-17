@@ -2,6 +2,8 @@ import streamlit as st
 from datetime import datetime, timedelta
 from typing import Dict, List, Tuple, Any, Optional
 from utils.time_utils import str_to_datetime
+from utils.filter_utils import filter_resource_by_id
+from domain.resources_data import get_resources
 
 
 # Validar y procesar los datos
@@ -127,14 +129,17 @@ def validate_required_fields(event_data: Dict[str, Any]) -> List[str]:
     """Valida que los campos requeridos estén presentes."""
     validation_errors: List[str] = []
     
-    if not event_data.get("spot"):
+    spot = filter_resource_by_id(get_resources(), event_data.get("spot"))
+    event_type = filter_resource_by_id(get_resources(), event_data.get("event_type"))
+
+    if not event_data.get("spot") or spot is None:
         validation_errors.append(
-            "Debe especificar un área de trabajo (ej: 'Espacio con Rampa', 'Espacio para pintura')."
+            "Debe especificar un área de trabajo que sea válido (ej: 'Espacio con Rampa', 'Espacio para pintura')."
         )
-    
-    if not event_data.get("event_type"):
+
+    if not event_data.get("event_type") or event_type is None:
         validation_errors.append(
-            "Debe especificar un tipo de evento/servicio (ej: 'Reparación eléctrica', 'Pintura exterior')."
+            "Debe especificar un tipo de evento/servicio que sea válido (ej: 'Reparación eléctrica', 'Pintura exterior')."
         )
     
     if not event_data.get("workers"):

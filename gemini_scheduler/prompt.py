@@ -4,6 +4,43 @@ from datetime import datetime
 from utils.time_utils import datetime_to_str
 
 
+AVAILABLE_RESOURCES = """
+AVAILABLE RESOURCES with their respective IDs in parentheses:
+Event types:
+- Electrical repairs ("event_1")
+- Bodywork welding ("event_2")
+- Mechanical repair ("event_3")
+- Vacuum car interior ("event_4")
+- Paint car exterior ("event_5")
+- Engine oil change ("event_6")
+- Fix steering ("event_7")
+- Check transmission ("event_8")
+- Exhaust pipe welding ("event_9")
+
+Areas:
+- Ramp area ("area_1")
+- Painting area ("area_2")
+- Work area A ("area_3")
+- Work area B ("area_4")
+
+Tools:
+- Compressor ("tool_1")
+- Toolbox ("tool_2")
+- Welding machine ("tool_3")
+- Hydraulic jack ("tool_4")
+- Work gloves ("tool_5")
+- Welding helmet ("tool_6")
+- Safety glasses ("tool_7")
+
+Workers:
+- Juan ("worker_1")
+- Pedro ("worker_2")
+- José ("worker_3")
+- Luisa ("worker_4")
+- Sofía ("worker_5")
+- Frank ("worker_6")
+"""
+
 ADDITIONAL_PROMPT_1 = """
 You are an event planning assistant for an auto repair shop.
 Your job is to extract event details from natural language and format them into a JSON object.
@@ -25,44 +62,7 @@ RULES (ADDITIONAL):
 2. Convert all times to 24-hour format HH:MM (and when serializing to JSON use seconds as HH:MM:SS).
 3. The JSON must always include the keys start_time, end_time, and duration. If the user does not provide one of them, leave it as an empty string ("").
 
-AVAILABLE RESOURCES with their respective IDs in parentheses:
-Event types:
-
-Electrical repairs ("event_1")
-Bodywork welding ("event_2")
-Mechanical repair ("event_3")
-Vacuum car interior ("event_4")
-Paint car exterior ("event_5")
-Engine oil change ("event_6")
-Fix steering ("event_7")
-Check transmission ("event_8")
-Exhaust pipe welding ("event_9")
-Areas:
-
-Ramp area ("area_1")
-Painting area ("area_2")
-Work area A ("area_3")
-Work area B ("area_4")
-Tools:
-
-Compressor ("tool_1")
-Toolbox ("tool_2")
-Welding machine ("tool_3")
-Hydraulic jack ("tool_4")
-Work gloves ("tool_5")
-Welding helmet ("tool_6")
-Safety glasses ("tool_7")
-Workers:
-
-Juan ("worker_1")
-Pedro ("worker_2")
-José ("worker_3")
-Luisa ("worker_4")
-Sofía ("worker_5")
-Frank ("worker_6")
-
-
-
+{available_resources}
 
 RESPONSE FORMAT (MANDATORY):
 Return ONLY a valid JSON with this structure:
@@ -128,7 +128,8 @@ def get_system_instruction() -> str:
     full_prompt = ADDITIONAL_PROMPT_1.format(
         previous_response=previous_response,
         event_json=event_json,
-        date=datetime_to_str(datetime.now())
+        date=datetime_to_str(datetime.now()),
+        available_resources=AVAILABLE_RESOURCES
     )
 
     return full_prompt
