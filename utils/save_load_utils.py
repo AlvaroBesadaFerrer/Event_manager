@@ -3,6 +3,7 @@ from domain.event import Event
 from utils.filter_utils import filter_resource_by_id, filter_resources_list_by_id
 from domain.resources_data import get_resources
 from utils.time_utils import datetime_to_str, str_to_datetime
+import streamlit as st
 
 
 def resources_to_list(resources):
@@ -57,7 +58,11 @@ def to_object(data):
             end_time=end_time,
             color=data["color"],
         )
-    except (KeyError, ValueError, TypeError) as e:  # Para manejar de errores si faltan claves o hay errores en el JSON porque no se guardó bien o se editó mal
+    except KeyError as e:
+        st.error(f"❌ Campo requerido faltante: {str(e)}")
+        return None
+    except (ValueError, TypeError) as e:
+        st.error(f"❌ Error al procesar tiempos: {str(e)}")
         return None
 
 def load_events_from_dict(event_data):

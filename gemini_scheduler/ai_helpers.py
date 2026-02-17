@@ -27,8 +27,8 @@ def explain_error_with_ai(validation_errors, prompt, event_data, client):
         f"{AVAILABLE_RESOURCES}\n\n"
         f"Entrada del usuario: {prompt}\n\n"
         f"JSON del evento: {json.dumps(event_data, ensure_ascii=False, indent=2)}\n\n"
-        f"Errores: {', '.join(validation_errors)}\n\n"
-        "IMPORTANTE: Solo usa recursos que existen en la lista anterior. No inventes areas, trabajadores, tipos de evento o herramientas."
+        f"ERRORES: {', '.join(validation_errors)}\n\n"
+        "IMPORTANTE: Solo usa recursos que existen en la lista anterior. No inventes areas, trabajadores, tipos de evento o herramientas. Solo explica los ERRORES, nada más."
     )
     
     ai_explanation = client.models.generate_content(

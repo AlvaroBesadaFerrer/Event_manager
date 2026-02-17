@@ -98,11 +98,15 @@ def merge_event_data(new_data, current_data):
     """Fusionar datos nuevos con datos existentes, preservando campos no mencionados en la entrada nueva"""
     if not current_data:
         return new_data
-    
+
+    valid_keys = {"spot", "event_type", "workers", "resources", "start_time", "end_time", "duration", "color"}
     merged = dict(current_data)
     
     # Actualizar campos con nuevos datos
     for key, value in new_data.items():
+        if key not in valid_keys:
+            st.warning(f"⚠️ Campo desconocido ignorado: {key}")
+            continue
         # Tratar arrays explícitamente (incluso arrays vacíos deben usarse)
         if isinstance(value, list):
             # Si la IA extrajo explícitamente un array, usarlo (incluso si está vacío)
@@ -119,12 +123,12 @@ def merge_event_data(new_data, current_data):
 
 
 def event_successfully_created():
-    st.success("✅ **Evento creado exitosamente!**")
-    st.balloons()
-    # Limpiar el estado de sesión después de crear el evento
     st.session_state['current_event'] = None
     st.session_state['event_json'] = '{}'
     st.session_state['previous_response'] = ''
+    st.success("✅ **Evento creado exitosamente!**")
+    st.balloons()
+    # Limpiar el estado de sesión después de crear el evento
 
 
 def display_event_summary(event_data):
@@ -183,8 +187,14 @@ if st.button("Procesar con IA"):
                 new_event_data["color"] = color_picker
                 # Fusionar con datos de evento existentes para preservar selecciones anteriores
                 if st.session_state['current_event']:
-                    current_event = json.loads(st.session_state['event_json'])
-                    event_data = merge_event_data(new_event_data, current_event)
+                    try:
+                        current_event = json.loads(st.session_state['event_json'])
+                        event_data = merge_event_data(new_event_data, current_event)
+                    except json.JSONDecodeError:
+                        st.warning("⚠️ Estado anterior corrupto. Iniciando evento nuevo.")
+                        st.session_state['event_json'] = '{}'
+                        st.session_state['current_event'] = None
+                        event_data = new_event_data
                 else:
                     event_data = new_event_data
                 
@@ -214,25 +224,29 @@ if st.button("Procesar con IA"):
                     # Intentar crear el evento
                     st.info("Creando evento en el sistema...")
                     # Llamar a schedule_event_helper con los parámetros correctos
+
                     event_data_object = to_object(event_data)
-                    
-                    errors = schedule_event_helper(
-                        use_auto_scheduler=use_auto_scheduler,
-                        spot=event_data_object.spot if event_data_object and event_data_object.spot else None,
-                        event_type=event_data_object.event_type if event_data_object else None,
-                        workers=event_data_object.workers if event_data_object else [],
-                        resources=event_data_object.resources if event_data_object else [],
-                        color=event_data_object.color if event_data_object else None,
-                        date=event_data_object.start_time.date() if event_data_object and event_data_object.start_time else None,
-                        start_time=event_data_object.start_time.time() if event_data_object and event_data_object.start_time else None,
-                        end_time=event_data_object.end_time.time() if event_data_object and event_data_object.end_time else None,
-                        duration=event_data.get("duration", 0),
-                    )
-                    
-                    if errors:
-                        explain_error_with_ai(errors, prompt, event_data, client)
+                    if not event_data_object:
+                        validation_errors.append("❌ Error interno: No se pudo procesar el evento. Verifica que todos los campos sean válidos.")
+                        explain_error_with_ai(validation_errors, prompt, event_data, client)
                     else:
-                        event_successfully_created()
+                        errors = schedule_event_helper(
+                            use_auto_scheduler=use_auto_scheduler,
+                            spot=event_data_object.spot if event_data_object and event_data_object.spot else None,
+                            event_type=event_data_object.event_type if event_data_object else None,
+                            workers=event_data_object.workers if event_data_object else [],
+                            resources=event_data_object.resources if event_data_object else [],
+                            color=event_data_object.color if event_data_object else None,
+                            date=event_data_object.start_time.date() if event_data_object and event_data_object.start_time else None,
+                            start_time=event_data_object.start_time.time() if event_data_object and event_data_object.start_time else None,
+                            end_time=event_data_object.end_time.time() if event_data_object and event_data_object.end_time else None,
+                            duration=event_data.get("duration", 0),
+                        )
+                        
+                        if errors:
+                            explain_error_with_ai(errors, prompt, event_data, client)
+                        else:
+                            event_successfully_created()
                         
             
             except json.JSONDecodeError as e:
