@@ -31,6 +31,7 @@ for event in events:  # Recorre cada evento cargado y lo agrega a la lista de it
 
 if items:  # Si hay eventos para mostrar, renderiza la línea de tiempo
     timeline = st_timeline(items, groups=[], options={}, height="300px")
+    st.markdown("Puedes hacer zoom, desplazarte y seleccionar eventos en la línea de tiempo para ver más detalles o eliminarlos.")
 
     if timeline:  # Si se selecciona un evento en la línea de tiempo, muestra sus detalles y la opción de eliminarlo
         delete_button = st.button(label=f'Eliminar evento {timeline["content"]} seleccionado?')
