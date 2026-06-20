@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "event-manager"
+version = "0.1.0"
+description = "Planificador de eventos para un taller mecanico"
+authors = ["AlvaroBesadaFerrer <besadaferreralvaro@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+dotenv = "0.9.9"
+google-genai = "1.63.0"
+streamlit = "1.53.1"
+streamlit-vis-timeline = "0.3.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
